@@ -1,0 +1,15 @@
+#ifndef DEFINERS_H
+#define DEFINERS_H
+
+#define ERR_SETPROCESSDPIAWARE 1
+
+#define ERR_WND_CPY_HWND 2
+#define ERR_WND_CPY_CLASS 3
+#define ERR_WND_GEN_CLASS 4
+#define ERR_WND_ADJ_RECT 5
+#define ERR_WND_GEN_HWND 6
+#define ERR_WND_SHOW 7
+
+#define ERR_CNSL_CREATE 8
+
+#endif // DEFINERS_H

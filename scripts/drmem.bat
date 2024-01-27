@@ -1,0 +1,1 @@
+drmemory -show_reachable -lib_blacklist C:\Windows\*.dll -- ".././app.exe"
