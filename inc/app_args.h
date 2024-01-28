@@ -14,7 +14,7 @@ namespace app
 	extern Window dbg_wnd;  // окно отладки
 	extern Console cnsl; // консоль
 
-	extern Graphics::Vulkan_Renderer vk_render; // графический контекст Vulkan
+	extern Graphics::Vulkan_Renderer vk_renderer; // графический контекст Vulkan
 
 	extern bool use_realtime_settings_change;
 

@@ -1,5 +1,15 @@
 #include "vulkan_renderer.h"
 
+bool Graphics::is_queuefamilyindices_complete(const QueueFamilyIndices *qfi)
+{
+
+}
+
+std::string *Graphics::Vulkan_Renderer::get_error_report(void)
+{
+    return &this->error_report;
+}
+
 int Graphics::Vulkan_Renderer::init()
 {
     VkResult err = VK_SUCCESS;
@@ -127,11 +137,6 @@ int Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
     return err;
 }
 
-std::string *Graphics::Vulkan_Renderer::get_error_report(void)
-{
-    return &this->error_report;
-}
-
 void Graphics::Vulkan_Renderer::output_version(void) const
 {
     printf("----------------------------------------\n");
@@ -183,31 +188,35 @@ void Graphics::Vulkan_Renderer::output_instance_extensions_preperties(void) cons
 
 void Graphics::Vulkan_Renderer::output_physical_devices(void) const
 {
-    const VkPhysicalDevice *pd = this->physical_devices.data();
-    VkPhysicalDeviceProperties pdp;
+    const VkPhysicalDevice *vpd = this->physical_devices.data();
     int nomer = 1;
 
     printf("----------------------------------------\n");
     printf("Avaible physical devices:\n");
 
-    for (uint32_t i = 0; i < this->physical_devices.size(); ++i, ++pd)
+    for (uint32_t i = 0; i < this->physical_devices.size(); ++i, ++vpd, ++nomer)
     {
-        vkGetPhysicalDeviceProperties(*pd, &pdp);
-
-        printf("\n%d:\tDevice Name: %s\n", nomer, pdp.deviceName);
-        printf("\tDevice Type: %d\n", pdp.deviceType);
-
-        printf("\tAPI Version: %u.%u.%u\n",
-               VK_VERSION_MAJOR(pdp.apiVersion),
-               VK_VERSION_MINOR(pdp.apiVersion),
-               VK_VERSION_PATCH(pdp.apiVersion));
-
-        // Другие свойства...
-
-        // printf("----------------------------------------\n");
-
-        ++nomer;
+        printf("\n%d:\n", nomer);
+        output_physical_device(vpd);
     }
+}
+
+VkLayerProperties *Graphics::Vulkan_Renderer::get_instance_layers_properties_arr(size_t *lenght)
+{
+    *lenght = this->layers.size();
+    return this->layers.data();
+}
+
+VkExtensionProperties *Graphics::Vulkan_Renderer::get_instance_extensions_properties_arr(size_t *lenght)
+{
+    *lenght = this->extensions.size();
+    return this->extensions.data();
+}
+
+VkPhysicalDevice *Graphics::Vulkan_Renderer::get_physical_devices_arr(size_t *lenght)
+{
+    *lenght = this->physical_devices.size();
+    return this->physical_devices.data();
 }
 
 Graphics::Vulkan_Renderer::~Vulkan_Renderer()

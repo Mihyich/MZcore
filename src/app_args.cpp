@@ -8,7 +8,7 @@ namespace app
     Window dbg_wnd;
     Console cnsl;
 
-    Graphics::Vulkan_Renderer vk_render;
+    Graphics::Vulkan_Renderer vk_renderer;
 
     bool use_realtime_settings_change = false;
 

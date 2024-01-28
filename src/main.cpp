@@ -136,9 +136,9 @@ int WINAPI WinMain(
 	}
 
 	// создание экземпляра вулкана
-	if (!err && (err = app::vk_render.init()) != EXIT_SUCCESS)
+	if (!err && (err = app::vk_renderer.init()) != EXIT_SUCCESS)
 	{
-		wstr_tmp = string_to_wstring(app::vk_render.get_error_report());
+		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
 
 		MessageBox(
 			NULL,
@@ -148,9 +148,9 @@ int WINAPI WinMain(
 	}
 
 	// Поиск физических устройств
-	if (!err && (err = app::vk_render.enumerate_physical_devices()) != EXIT_SUCCESS)
+	if (!err && (err = app::vk_renderer.enumerate_physical_devices()) != EXIT_SUCCESS)
 	{
-		wstr_tmp = string_to_wstring(app::vk_render.get_error_report());
+		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
 
 		MessageBox(
 			NULL,
@@ -160,9 +160,9 @@ int WINAPI WinMain(
 	}
 
 	// поиск поддерживаемых расширений
-	if (!err && (err = app::vk_render.enumerate_instance_extensions_properties()) != EXIT_SUCCESS)
+	if (!err && (err = app::vk_renderer.enumerate_instance_extensions_properties()) != EXIT_SUCCESS)
 	{
-		wstr_tmp = string_to_wstring(app::vk_render.get_error_report());
+		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
 
 		MessageBox(
 			NULL,
@@ -172,9 +172,9 @@ int WINAPI WinMain(
 	}
 
 	// поиск поддерживаемых слоев
-	if (!err && (err = app::vk_render.enumerate_instance_layers_properties()) != EXIT_SUCCESS)
+	if (!err && (err = app::vk_renderer.enumerate_instance_layers_properties()) != EXIT_SUCCESS)
 	{
-		wstr_tmp = string_to_wstring(app::vk_render.get_error_report());
+		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
 
 		MessageBox(
 			NULL,
@@ -185,10 +185,10 @@ int WINAPI WinMain(
 
 	if (!err)
 	{
-		app::vk_render.output_version();
-		app::vk_render.output_instance_layers_properties();
-		app::vk_render.output_instance_extensions_preperties();
-		app::vk_render.output_physical_devices();
+		app::vk_renderer.output_version();
+		app::vk_renderer.output_instance_layers_properties();
+		app::vk_renderer.output_instance_extensions_preperties();
+		app::vk_renderer.output_physical_devices();
 	}
 
 	// Запустить игровой цикл
