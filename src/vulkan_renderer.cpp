@@ -10,19 +10,76 @@ std::string *Graphics::Vulkan_Renderer::get_error_report(void)
     return &this->error_report;
 }
 
-int Graphics::Vulkan_Renderer::init()
+VkResult Graphics::Vulkan_Renderer::init()
 {
     VkResult err = VK_SUCCESS;
+    std::string tmp_str;
 
     // поиск доступной версии вулкана
     if ((err = vkEnumerateInstanceVersion(&this->version)) != VK_SUCCESS)
         this->gen_report_error("vkEnumerateInstanceVersion", nullptr, err);
+    else
+        this->version &= ~(0xFFFU); // убрать состовляющую патча
 
+    // поиск доступных расширений
+    if (!err)
+        err = enumerate_instance_extensions_properties();
+
+    // Проверка поддержки запрашиваемых расширений
     if (!err)
     {
-        this->version &= ~(0xFFFU); // убрать состовляющую патча
-        // version = VK_MAKE_API_VERSION(0, 1, 0, 0);
+        for (auto req_ext : this->req_extensions)
+        {
+            if (!is_extension_supported(req_ext))
+            {
+                tmp_str = "Extension \"";
+                tmp_str += req_ext;
+                tmp_str += "\" is not existing";
 
+                this->gen_report_error(
+                    "is_extension_supported",
+                    tmp_str.data(),
+                    err);
+                
+                err = VK_INCOMPLETE;
+                break;
+            }
+        }
+    }
+
+    // поиск доступных слоев
+    if (!err)
+        err = enumerate_instance_layers_properties();
+
+    // Проверка поддержки запрашиваемых слоев
+    if (!err)
+    {
+        for (auto req_layer : this->req_layers)
+        {
+            if (!is_layer_supported(req_layer))
+            {
+                tmp_str = "Layer \"";
+                tmp_str += req_layer;
+                tmp_str += "\" is not existing";
+
+                this->gen_report_error(
+                    "is_layer_supported",
+                    tmp_str.data(),
+                    err);
+
+                err = VK_INCOMPLETE;
+                break;
+            }
+        }
+    }
+
+    // // поиск физических устройств
+    // if (!err)
+    //     err = enumerate_physical_devices();
+
+    // создание экземпляра
+    if (!err)
+    {
         // Инициализация информации о приложении для Vulkan
         this->appInfo = {};
         this->appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO; // Какую структур данных должен использовать vk для инициализации
@@ -32,7 +89,7 @@ int Graphics::Vulkan_Renderer::init()
         this->appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0); // Версия игрового движка
         this->appInfo.apiVersion = this->version; // Версия vk
 
-        // Создание структуры для создания экземпляра Vulkan
+        // Заполнение структуры для создания экземпляра Vulkan
         this->createInfo = {};
         this->createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         this->createInfo.pApplicationInfo = &this->appInfo;
@@ -47,7 +104,7 @@ int Graphics::Vulkan_Renderer::init()
     return err;
 }
 
-int Graphics::Vulkan_Renderer::enumerate_instance_layers_properties(void)
+VkResult Graphics::Vulkan_Renderer::enumerate_instance_layers_properties(void)
 {
     VkResult err = VK_SUCCESS;
     uint32_t layers_count = 0;
@@ -76,7 +133,7 @@ int Graphics::Vulkan_Renderer::enumerate_instance_layers_properties(void)
     return err;
 }
 
-int Graphics::Vulkan_Renderer::enumerate_instance_extensions_properties(void)
+VkResult Graphics::Vulkan_Renderer::enumerate_instance_extensions_properties(void)
 {
     VkResult err = VK_SUCCESS;
     uint32_t extension_count = 0;
@@ -105,7 +162,7 @@ int Graphics::Vulkan_Renderer::enumerate_instance_extensions_properties(void)
     return err;
 }
 
-int Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
+VkResult Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
 {
     VkResult err = VK_SUCCESS;
     uint32_t device_count = 0;
@@ -135,6 +192,22 @@ int Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
     }
 
     return err;
+}
+
+bool Graphics::Vulkan_Renderer::is_layer_supported(const char *layer) const
+{
+    for (size_t i = 0; i < this->layers.size(); ++i)
+        if (strcmp(layer, this->layers[i].layerName) == 0)
+            return true;
+    return false;
+}
+
+bool Graphics::Vulkan_Renderer::is_extension_supported(const char *extension) const
+{
+    for (size_t i = 0; i < this->extensions.size(); ++i)
+        if (strcmp(extension, this->extensions[i].extensionName) == 0)
+            return true;
+    return false;
 }
 
 void Graphics::Vulkan_Renderer::output_version(void) const
@@ -228,20 +301,20 @@ void Graphics::Vulkan_Renderer::gen_report_error(const char *func_name, const ch
 {
     std::string tmp;
 
-    this->error_report.assign("error from ");
+    this->error_report.assign("Error from ");
     this->error_report += func_name;
     this->error_report += "()";
 
     if (description)
     {
-        this->error_report += "\ndescription: ";
+        this->error_report += "\nDescription: ";
         this->error_report += description;
     }
 
     if (err_code)
     {
         tmp = std::to_string(err_code);
-        this->error_report += "\nerr_code: ";
+        this->error_report += "\nErr_code: ";
         this->error_report += tmp;
     }
 }

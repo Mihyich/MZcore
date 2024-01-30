@@ -135,6 +135,17 @@ int WINAPI WinMain(
 		err = ERR_WND_SHOW;
 	}
 
+    // Запросить расширения при создании
+    app::vk_renderer.req_extensions.push_back("VK_KHR_surface");
+    app::vk_renderer.req_extensions.push_back("VK_KHR_win32_surface");
+
+    // Если нужна валидация вулкана
+    if (app::vk_debug)
+    {
+        app::vk_renderer.req_extensions.push_back("VK_EXT_debug_utils");
+        app::vk_renderer.req_layers.push_back("VK_LAYER_KHRONOS_validation");
+    }
+
 	// создание экземпляра вулкана
 	if (!err && (err = app::vk_renderer.init()) != EXIT_SUCCESS)
 	{
@@ -147,47 +158,12 @@ int WINAPI WinMain(
 			MB_OK | MB_ICONINFORMATION);
 	}
 
-	// Поиск физических устройств
-	if (!err && (err = app::vk_renderer.enumerate_physical_devices()) != EXIT_SUCCESS)
-	{
-		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
-
-		MessageBox(
-			NULL,
-			wstr_tmp.c_str(),
-			L"Ошибка Vulkan...\n",
-			MB_OK | MB_ICONINFORMATION);
-	}
-
-	// поиск поддерживаемых расширений
-	if (!err && (err = app::vk_renderer.enumerate_instance_extensions_properties()) != EXIT_SUCCESS)
-	{
-		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
-
-		MessageBox(
-			NULL,
-			wstr_tmp.c_str(),
-			L"Ошибка Vulkan...\n",
-			MB_OK | MB_ICONINFORMATION);
-	}
-
-	// поиск поддерживаемых слоев
-	if (!err && (err = app::vk_renderer.enumerate_instance_layers_properties()) != EXIT_SUCCESS)
-	{
-		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
-
-		MessageBox(
-			NULL,
-			wstr_tmp.c_str(),
-			L"Ошибка Vulkan...\n",
-			MB_OK | MB_ICONINFORMATION);
-	}
-
+    // некий вывод того чего получилось в vulkane
 	if (!err)
 	{
 		app::vk_renderer.output_version();
+        app::vk_renderer.output_instance_extensions_preperties();
 		app::vk_renderer.output_instance_layers_properties();
-		app::vk_renderer.output_instance_extensions_preperties();
 		app::vk_renderer.output_physical_devices();
 	}
 

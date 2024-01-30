@@ -58,6 +58,6 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "vulkan_device.h": "cpp"
+        "vulkan_device.h": "cpp",
     }
 }

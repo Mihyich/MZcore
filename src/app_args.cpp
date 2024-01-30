@@ -2,6 +2,7 @@
 
 namespace app
 {
+    bool vk_debug = true;
     bool debugging = true;
 
     Window game_wnd;

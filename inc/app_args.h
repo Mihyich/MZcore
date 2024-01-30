@@ -8,6 +8,7 @@
 
 namespace app
 {
+    extern bool vk_debug;
 	extern bool debugging;
 
 	extern Window game_wnd; // игровое окно

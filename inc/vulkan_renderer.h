@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
+#include <list>
 #include <stdio.h>
 #include "definers.h"
 #include "vulkan_device.h"
@@ -26,8 +27,8 @@ namespace Graphics
     	VkApplicationInfo appInfo = {}; // информация о приложении для Vulkan
     	VkInstanceCreateInfo createInfo = {}; // структура для создания экземпляра Vulkan
 
-    	std::vector<VkLayerProperties> layers; // слои
     	std::vector<VkExtensionProperties> extensions; // расширения
+        std::vector<VkLayerProperties> layers; // слои
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
     	std::vector<VkQueueFamilyProperties> queue_family_props; // семейтва очередей
 
@@ -38,17 +39,31 @@ namespace Graphics
 
     public:
 
+        // запрашиваемые расширения
+        std::list<const char*> req_extensions;
+
+        // запрашиваемые слои
+        std::list<const char*> req_layers;
+
         std::string *get_error_report(void);
 
-    	int init();
+    	VkResult init();
 
-    	int enumerate_instance_layers_properties(void);
+    private:
 
-    	int enumerate_instance_extensions_properties(void);
+    	VkResult enumerate_instance_layers_properties(void);
 
-    	int enumerate_physical_devices(void);
+    	VkResult enumerate_instance_extensions_properties(void);
 
-    	int get_physical_device_queue_family_properties(const VkPhysicalDevice device);
+    	VkResult enumerate_physical_devices(void);
+
+        bool is_layer_supported(const char *layers) const;
+
+        bool is_extension_supported(const char *extension) const;
+
+    	VkResult get_physical_device_queue_family_properties(const VkPhysicalDevice device);
+
+    public:
 
     	void output_version(void) const;
 
