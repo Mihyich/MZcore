@@ -93,6 +93,10 @@ VkResult Graphics::Vulkan_Renderer::init()
         this->createInfo = {};
         this->createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         this->createInfo.pApplicationInfo = &this->appInfo;
+        this->createInfo.enabledExtensionCount = this->req_extensions.size();
+        this->createInfo.ppEnabledExtensionNames = this->req_extensions.data();
+        this->createInfo.enabledLayerCount = this->req_layers.size();
+        this->createInfo.ppEnabledLayerNames = this->req_layers.data();
 
         // Создание экземпляра Vulkan
         if ((err = vkCreateInstance(&this->createInfo, nullptr, &this->instance)) != VK_SUCCESS)

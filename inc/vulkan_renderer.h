@@ -4,7 +4,6 @@
 #include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
-#include <list>
 #include <stdio.h>
 #include "definers.h"
 #include "vulkan_device.h"
@@ -40,10 +39,10 @@ namespace Graphics
     public:
 
         // запрашиваемые расширения
-        std::list<const char*> req_extensions;
+        std::vector<const char*> req_extensions;
 
         // запрашиваемые слои
-        std::list<const char*> req_layers;
+        std::vector<const char*> req_layers;
 
         std::string *get_error_report(void);
 
