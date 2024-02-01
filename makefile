@@ -4,6 +4,8 @@ CCPP := g++
 INC := .\inc
 SRC := .\src
 OUT := .\out
+OUT_R := $(OUT)\Release
+OUT_D := $(OUT)\Debug
 
 # Vulkan
 VK_INC := C:\VulkanSDK\1.3.268.0\Include
@@ -11,6 +13,21 @@ VK_LIB := C:\VulkanSDK\1.3.268.0\Lib
 
 CFAGS := -std=c99 -Wall -Wextra -Wpedantic -I$(INC) -DUNICODE -D_UNICODE
 CPPFLAGS := -std=c++11 -Wall -Wextra -Wpedantic -I$(INC) -I$(VK_INC) -DUNICODE -D_UNICODE
+
+# условная сборка
+mode := release
+
+ifeq ($(mode), release)
+	CFAGS += -DNDEBUG -g0 -o3
+	CPPFLAGS += -DNDEBUG -g0 -o3
+	OUT := $(OUT_R)
+endif
+
+ifeq ($(mode), debug)
+	CFAGS += -g3
+	CPPFLAGS += -g3
+	OUT := $(OUT_D)
+endif
 
 # файлы приложения
 APP_OBJ := $(OUT)/main.o $(OUT)/app_args.o $(OUT)/console.o $(OUT)/dbg_window_proc.o \
@@ -21,18 +38,6 @@ $(OUT)/window.o
 # файлы библиотеки линейной алгебры
 LA_OBJ := $(OUT)/LA_sup.o $(OUT)/Vector2D.o $(OUT)/Vector3D.o $(OUT)/Vector4D.o \
 $(OUT)/Matrix2D.o $(OUT)/Matrix3D.o $(OUT)/Matrix4D.o $(OUT)/Quaternion.o
-
-mode := release
-
-ifeq ($(mode), release)
-	CFAGS += -DNDEBUG -g0 -o3
-	CPPFLAGS += -DNDEBUG -g0 -o3
-endif
-
-ifeq ($(mode), debug)
-	CFAGS += -g3
-	CPPFLAGS += -g3
-endif
 
 app.exe : $(APP_OBJ) LA.lib
 	$(CCPP) -o $@ $^ -L. -lLA -L$(VK_LIB) -lvulkan-1
