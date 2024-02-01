@@ -135,19 +135,8 @@ int WINAPI WinMain(
 		err = ERR_WND_SHOW;
 	}
 
-    // Запросить расширения при создании
-    app::vk_renderer.req_extensions.push_back("VK_KHR_surface");
-    app::vk_renderer.req_extensions.push_back("VK_KHR_win32_surface");
-
-    // Если нужна валидация вулкана
-    if (app::vk_debug)
-    {
-        app::vk_renderer.req_extensions.push_back("VK_EXT_debug_utils");
-        app::vk_renderer.req_layers.push_back("VK_LAYER_KHRONOS_validation");
-    }
-
 	// создание экземпляра вулкана
-	if (!err && (err = app::vk_renderer.init()) != EXIT_SUCCESS)
+	if (!err && (err = app::vk_renderer.init(false, false, app::vk_debug)) != EXIT_SUCCESS)
 	{
 		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
 

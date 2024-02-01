@@ -10,7 +10,7 @@ std::string *Graphics::Vulkan_Renderer::get_error_report(void)
     return &this->error_report;
 }
 
-VkResult Graphics::Vulkan_Renderer::init()
+VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers, bool debug)
 {
     VkResult err = VK_SUCCESS;
     std::string tmp_str;
@@ -25,57 +25,25 @@ VkResult Graphics::Vulkan_Renderer::init()
     if (!err)
         err = enumerate_instance_extensions_properties();
 
+    // если пользовательские расширения не введены - использовать по умолчанию
+    if (!err && !user_extensions)
+        set_std_instance_extensions(debug);
+
     // Проверка поддержки запрашиваемых расширений
     if (!err)
-    {
-        for (auto req_ext : this->req_extensions)
-        {
-            if (!is_extension_supported(req_ext))
-            {
-                tmp_str = "Extension \"";
-                tmp_str += req_ext;
-                tmp_str += "\" is not existing";
-
-                this->gen_report_error(
-                    "is_extension_supported",
-                    tmp_str.data(),
-                    err);
-                
-                err = VK_INCOMPLETE;
-                break;
-            }
-        }
-    }
+        err = check_extensions_support();
 
     // поиск доступных слоев
     if (!err)
         err = enumerate_instance_layers_properties();
 
+    // если пользовательские слои не введены - использовать по умолчанию
+    if (!err && !user_layers)
+        set_std_instance_layers(debug);
+
     // Проверка поддержки запрашиваемых слоев
     if (!err)
-    {
-        for (auto req_layer : this->req_layers)
-        {
-            if (!is_layer_supported(req_layer))
-            {
-                tmp_str = "Layer \"";
-                tmp_str += req_layer;
-                tmp_str += "\" is not existing";
-
-                this->gen_report_error(
-                    "is_layer_supported",
-                    tmp_str.data(),
-                    err);
-
-                err = VK_INCOMPLETE;
-                break;
-            }
-        }
-    }
-
-    // // поиск физических устройств
-    // if (!err)
-    //     err = enumerate_physical_devices();
+        err = check_layers_support();
 
     // создание экземпляра
     if (!err)
@@ -101,9 +69,58 @@ VkResult Graphics::Vulkan_Renderer::init()
         // Создание экземпляра Vulkan
         if ((err = vkCreateInstance(&this->createInfo, nullptr, &this->instance)) != VK_SUCCESS)
             this->gen_report_error("vkCreateInstance", nullptr, err);
-    } 
+    }
 
     // Другие шаги инициализации могут включать в себя создание устройства, swap chain и т.д.
+
+    return err;
+}
+
+void Graphics::Vulkan_Renderer::set_std_instance_extensions(bool debug)
+{
+    this->req_extensions.clear();
+    this->req_extensions.push_back("VK_KHR_surface");
+    this->req_extensions.push_back("VK_KHR_win32_surface");
+
+    if (debug)
+    {
+        this->req_extensions.push_back("VK_EXT_debug_utils");
+    }
+}
+
+void Graphics::Vulkan_Renderer::set_std_instance_layers(bool debug)
+{
+    if (debug)
+    {
+        this->req_layers.push_back("VK_LAYER_KHRONOS_validation");
+    }
+}
+
+VkResult Graphics::Vulkan_Renderer::enumerate_instance_extensions_properties(void)
+{
+    VkResult err = VK_SUCCESS;
+    uint32_t extension_count = 0;
+
+    this->extensions.clear();
+
+    if (!(err = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr)) != VK_SUCCESS)
+        this->gen_report_error("vkEnumerateInstanceExtensionProperties", nullptr, err);
+
+    if (!err && !extension_count)
+    {
+        err = VkResult::VK_INCOMPLETE; // самый подходящий код возврата, который я смог найти
+        this->gen_report_error("vkEnumerateInstanceExtensionProperties",
+                               "No Vulkan instance extensions available",
+                               err);
+    }
+
+    if (!err)
+    {
+        this->extensions.resize(extension_count);
+
+        if ((err = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, this->extensions.data())) != VK_SUCCESS)
+            this->gen_report_error("vkEnumerateInstanceExtensionProperties", nullptr, err);
+    }
 
     return err;
 }
@@ -137,30 +154,116 @@ VkResult Graphics::Vulkan_Renderer::enumerate_instance_layers_properties(void)
     return err;
 }
 
-VkResult Graphics::Vulkan_Renderer::enumerate_instance_extensions_properties(void)
+VkResult Graphics::Vulkan_Renderer::check_extensions_support(void)
 {
     VkResult err = VK_SUCCESS;
-    uint32_t extension_count = 0;
+    std::string tmp_str;
 
-    this->extensions.clear();
-
-    if (!(err = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr)) != VK_SUCCESS)
-        this->gen_report_error("vkEnumerateInstanceExtensionProperties", nullptr, err);
-
-    if (!err && !extension_count)
+    for (auto req_ext : this->req_extensions)
     {
-        err = VkResult::VK_INCOMPLETE; // самый подходящий код возврата, который я смог найти
-        this->gen_report_error("vkEnumerateInstanceExtensionProperties",
-                               "No Vulkan instance extensions available",
-                               err);
+        if (!is_extension_supported(req_ext))
+        {
+            tmp_str = "Extension \"";
+            tmp_str += req_ext;
+            tmp_str += "\" is not existing";
+
+            this->gen_report_error(
+                "is_extension_supported",
+                tmp_str.data(),
+                err);
+            
+            err = VK_INCOMPLETE;
+            break;
+        }
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::check_layers_support(void)
+{
+    VkResult err = VK_SUCCESS;
+    std::string tmp_str;
+
+    for (auto req_layer : this->req_layers)
+    {
+        if (!is_layer_supported(req_layer))
+        {
+            tmp_str = "Layer \"";
+            tmp_str += req_layer;
+            tmp_str += "\" is not existing";
+
+            this->gen_report_error(
+                "is_layer_supported",
+                tmp_str.data(),
+                err);
+
+            err = VK_INCOMPLETE;
+            break;
+        }
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::load_extensions(void)
+{
+    VkResult err = VK_SUCCESS;
+
+    if (!err)
+    {
+        if ((err = VK_DYNAMIC_LOAD_FUNC_CHECK(this->instance, vkCreateDebugUtilsMessengerEXT)))
+        {
+            this->gen_report_error("vkGetInstanceProcAddr",
+                "cannot load \"vkCreateDebugUtilsMessengerEXT\" function",
+                err);
+        }
     }
 
     if (!err)
     {
-        this->extensions.resize(extension_count);
+        if ((err = VK_DYNAMIC_LOAD_FUNC_CHECK(this->instance, vkDestroyDebugUtilsMessengerEXT)))
+        {
+            this->gen_report_error("vkGetInstanceProcAddr",
+                "cannot load \"vkDestroyDebugUtilsMessengerEXT\" function",
+                err);
+        }
+    }
 
-        if ((err = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, this->extensions.data())) != VK_SUCCESS)
-            this->gen_report_error("vkEnumerateInstanceExtensionProperties", nullptr, err);
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
+{
+    VkResult err = VK_SUCCESS;
+    VkDebugUtilsMessengerEXT debugMessenger;
+    VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
+
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+
+    createInfo.messageSeverity =
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+
+    createInfo.messageType =
+    VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | 
+    VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
+    createInfo.pfnUserCallback = vk_debug_msg_callback;
+    createInfo.pUserData = nullptr;
+
+    err = vkCreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
+
+    if (!err)
+    {
+        this->gen_report_error(
+            "vkCreateDebugUtilsMessengerEXT",
+            nullptr,
+            err
+        );
     }
 
     return err;

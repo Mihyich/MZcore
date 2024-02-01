@@ -14,8 +14,9 @@ CPPFLAGS := -std=c++11 -Wall -Wextra -Wpedantic -I$(INC) -I$(VK_INC) -DUNICODE -
 
 # файлы приложения
 APP_OBJ := $(OUT)/main.o $(OUT)/app_args.o $(OUT)/console.o $(OUT)/dbg_window_proc.o \
-$(OUT)/game_loop.o $(OUT)/game_window_proc.o $(OUT)/str_converter.o $(OUT)/vulkan_renderer.o \
-$(OUT)/vulkan_device.o $(OUT)/window.o
+$(OUT)/game_loop.o $(OUT)/game_window_proc.o $(OUT)/str_converter.o $(OUT)/vulkan_device.o \
+$(OUT)/vulkan_dynamic_ext_loader.o $(OUT)/vulkan_messenger.o $(OUT)/vulkan_renderer.o \
+$(OUT)/window.o
 
 # файлы библиотеки линейной алгебры
 LA_OBJ := $(OUT)/LA_sup.o $(OUT)/Vector2D.o $(OUT)/Vector3D.o $(OUT)/Vector4D.o \

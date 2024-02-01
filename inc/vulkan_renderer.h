@@ -6,7 +6,9 @@
 #include <vector>
 #include <stdio.h>
 #include "definers.h"
+#include "vulkan_dynamic_ext_loader.h"
 #include "vulkan_device.h"
+#include "vulkan_messenger.h"
 
 namespace Graphics
 {
@@ -25,6 +27,8 @@ namespace Graphics
     	VkInstance instance = VK_NULL_HANDLE; // экземпляр Vulkan
     	VkApplicationInfo appInfo = {}; // информация о приложении для Vulkan
     	VkInstanceCreateInfo createInfo = {}; // структура для создания экземпляра Vulkan
+
+        VkDebugUtilsMessengerEXT dbg_msg = { nullptr }; // отладодчный вывод Vulkan
 
     	std::vector<VkExtensionProperties> extensions; // расширения
         std::vector<VkLayerProperties> layers; // слои
@@ -46,13 +50,25 @@ namespace Graphics
 
         std::string *get_error_report(void);
 
-    	VkResult init();
+    	VkResult init(bool user_extensions = false, bool user_layers = false, bool debug = false);
 
     private:
 
+        void set_std_instance_extensions(bool debug);
+
+        void set_std_instance_layers(bool debug);
+
+        VkResult enumerate_instance_extensions_properties(void);
+
     	VkResult enumerate_instance_layers_properties(void);
 
-    	VkResult enumerate_instance_extensions_properties(void);
+        VkResult check_extensions_support(void);
+
+        VkResult check_layers_support(void);
+
+        VkResult load_extensions(void);
+
+        VkResult create_debug_utils_messenger_ext(void);
 
     	VkResult enumerate_physical_devices(void);
 
