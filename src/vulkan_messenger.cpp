@@ -6,7 +6,7 @@ namespace Graphics
         VkDebugUtilsMessageSeverityFlagBitsEXT msg_severity,
         VkDebugUtilsMessageTypeFlagsEXT msg_type,
         const VkDebugUtilsMessengerCallbackDataEXT *callback_data,
-        void *user_data 
+        void *user_data
     )
     {
         std::cout << "validation layer: " << callback_data->pMessage << '\n';
