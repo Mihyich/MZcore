@@ -6,6 +6,12 @@ extern "C"
 {
 #endif
 
+#ifdef __linux__
+    #define CDECL 
+#else
+    #define CDECL CDECL
+#endif
+
 #include "LA_sup.h"
 #include "Vector3D.h"
 #include "Vector4D.h"
@@ -23,27 +29,27 @@ struct Quaternion
     float w;
 };
 
-void __cdecl quat_set(pquat q, float x, float y, float z, float w);
+void CDECL quat_set(pquat q, float x, float y, float z, float w);
 
-float __cdecl quat_square_magnitude(cpquat q);
+float CDECL quat_square_magnitude(cpquat q);
 
-float __cdecl quat_magnitude(cpquat q);
+float CDECL quat_magnitude(cpquat q);
 
-void __cdecl quat_normalize(pquat q);
+void CDECL quat_normalize(pquat q);
 
-void __cdecl quat_conjugate(pquat q);
+void CDECL quat_conjugate(pquat q);
 
-void __cdecl quat_inverse(pquat q);
+void CDECL quat_inverse(pquat q);
 
-void __cdecl quat_compose(pquat q1, cpquat q2);
+void CDECL quat_compose(pquat q1, cpquat q2);
 
-void __cdecl quat_compose_res(cpquat q1, cpquat q2, pquat res);
+void CDECL quat_compose_res(cpquat q1, cpquat q2, pquat res);
 
-void __cdecl quat_set_rotate(pquat q, float x, float y, float z, float rad);
+void CDECL quat_set_rotate(pquat q, float x, float y, float z, float rad);
 
-void __cdecl quat_set_rotate_degrees(pquat q, float x, float y, float z, float degrees);
+void CDECL quat_set_rotate_degrees(pquat q, float x, float y, float z, float degrees);
 
-void __cdecl quat_rotate_vec(pvec3 v, cpquat q);
+void CDECL quat_rotate_vec(pvec3 v, cpquat q);
 
 #ifdef __cplusplus
 }

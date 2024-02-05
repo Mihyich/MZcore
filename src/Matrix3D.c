@@ -5,7 +5,7 @@ extern "C"
 {
 #endif
 
-void __cdecl mat3_set(
+void CDECL mat3_set(
     pmat3 m,
     float xx, float xy, float xz,
     float yx, float yy, float yz,
@@ -16,35 +16,35 @@ void __cdecl mat3_set(
     m->z_basis.x = zx; m->z_basis.y = zy; m->z_basis.z = zz;
 }
 
-void __cdecl mat3_set_x_basis(pmat3 m, float x, float y, float z)
+void CDECL mat3_set_x_basis(pmat3 m, float x, float y, float z)
 {
     m->x_basis.x = x;
     m->x_basis.y = y;
     m->x_basis.z = z;
 }
 
-void __cdecl mat3_set_y_basis(pmat3 m, float x, float y, float z)
+void CDECL mat3_set_y_basis(pmat3 m, float x, float y, float z)
 {
     m->y_basis.x = x;
     m->y_basis.y = y;
     m->y_basis.z = z;
 }
 
-void __cdecl mat3_set_z_basis(pmat3 m, float x, float y, float z)
+void CDECL mat3_set_z_basis(pmat3 m, float x, float y, float z)
 {
     m->z_basis.x = x;
     m->z_basis.y = y;
     m->z_basis.z = z;
 }
 
-void __cdecl mat3_set_basises(pmat3 m, cpvec3 x, cpvec3 y, cpvec3 z)
+void CDECL mat3_set_basises(pmat3 m, cpvec3 x, cpvec3 y, cpvec3 z)
 {
     m->x_basis = *x;
     m->y_basis = *y;
     m->z_basis = *z;
 }
 
-void __cdecl mat3_transpose(pmat3 m)
+void CDECL mat3_transpose(pmat3 m)
 {
     float *md = (float*)m;
     _swap_u(md + 1, md + 3, sizeof(float));
@@ -52,7 +52,7 @@ void __cdecl mat3_transpose(pmat3 m)
     _swap_u(md + 5, md + 7, sizeof(float));
 }
 
-void __cdecl mat3_scalar_mult(pmat3 m, float s)
+void CDECL mat3_scalar_mult(pmat3 m, float s)
 {
     m->x_basis.x *= s;
     m->x_basis.y *= s;
@@ -67,7 +67,7 @@ void __cdecl mat3_scalar_mult(pmat3 m, float s)
     m->z_basis.z *= s;
 }
 
-void __cdecl mat3_divide(pmat3 m, float d)
+void CDECL mat3_divide(pmat3 m, float d)
 {
     m->x_basis.x /= d;
     m->x_basis.y /= d;
@@ -82,7 +82,7 @@ void __cdecl mat3_divide(pmat3 m, float d)
     m->z_basis.z /= d;
 }
 
-void __cdecl mat3_add(pmat3 m1, cpmat3 m2)
+void CDECL mat3_add(pmat3 m1, cpmat3 m2)
 {
     m1->x_basis.x += m2->x_basis.x;
     m1->x_basis.y += m2->x_basis.y;
@@ -97,7 +97,7 @@ void __cdecl mat3_add(pmat3 m1, cpmat3 m2)
     m1->z_basis.z += m2->z_basis.z;
 }
 
-void __cdecl mat3_sub(pmat3 m1, cpmat3 m2)
+void CDECL mat3_sub(pmat3 m1, cpmat3 m2)
 {
     m1->x_basis.x -= m2->x_basis.x;
     m1->x_basis.y -= m2->x_basis.y;
@@ -112,7 +112,7 @@ void __cdecl mat3_sub(pmat3 m1, cpmat3 m2)
     m1->z_basis.z -= m2->z_basis.z;
 }
 
-void __cdecl mat3_sum(cpmat3 m1, cpmat3 m2, pmat3 res)
+void CDECL mat3_sum(cpmat3 m1, cpmat3 m2, pmat3 res)
 {
     res->x_basis.x = m1->x_basis.x + m2->x_basis.x;
     res->x_basis.y = m1->x_basis.y + m2->x_basis.y;
@@ -127,7 +127,7 @@ void __cdecl mat3_sum(cpmat3 m1, cpmat3 m2, pmat3 res)
     res->z_basis.z = m1->z_basis.z + m2->z_basis.z;
 }
 
-void __cdecl mat3_diff(cpmat3 m1, cpmat3 m2, pmat3 res)
+void CDECL mat3_diff(cpmat3 m1, cpmat3 m2, pmat3 res)
 {
     res->x_basis.x = m1->x_basis.x - m2->x_basis.x;
     res->x_basis.y = m1->x_basis.y - m2->x_basis.y;
@@ -142,7 +142,7 @@ void __cdecl mat3_diff(cpmat3 m1, cpmat3 m2, pmat3 res)
     res->z_basis.z = m1->z_basis.z - m2->z_basis.z;
 }
 
-void __cdecl mat3_compose(pmat3 m1, cpmat3 m2)
+void CDECL mat3_compose(pmat3 m1, cpmat3 m2)
 {
     const float xx = m1->x_basis.x;
     const float xy = m1->x_basis.y;
@@ -168,7 +168,7 @@ void __cdecl mat3_compose(pmat3 m1, cpmat3 m2)
 	md1[8] = dot3(xz, yz, md1[8], md2[6], md2[7], md2[8]);
 }
 
-void __cdecl mat3_transform(cpmat3 m, pvec3 v)
+void CDECL mat3_transform(cpmat3 m, pvec3 v)
 {
     const float x = v->x;
     const float y = v->y;
@@ -179,7 +179,7 @@ void __cdecl mat3_transform(cpmat3 m, pvec3 v)
     v->z = dot3(md[2], md[5], md[8], x, y, v->z);
 }
 
-void __cdecl mat3_compose_res(cpmat3 m1, cpmat3 m2, pmat3 res)
+void CDECL mat3_compose_res(cpmat3 m1, cpmat3 m2, pmat3 res)
 {
     const float *md1 = (const float*)m1;
     const float *md2 = (const float*)m2;
@@ -198,7 +198,7 @@ void __cdecl mat3_compose_res(cpmat3 m1, cpmat3 m2, pmat3 res)
 	rd[8] = dot3(md1[2], md1[5], md1[8], md2[6], md2[7], md2[8]);
 }
 
-void __cdecl mat3_transform_res(cpmat3 m, cpvec3 v, pvec3 res)
+void CDECL mat3_transform_res(cpmat3 m, cpvec3 v, pvec3 res)
 {
     const float *md = (const float*)m;
 
@@ -207,7 +207,7 @@ void __cdecl mat3_transform_res(cpmat3 m, cpvec3 v, pvec3 res)
     res->z = dot3(md[2], md[5], md[8], v->x, v->y, v->z);
 }
 
-float __cdecl mat3_determinant(cpmat3 m)
+float CDECL mat3_determinant(cpmat3 m)
 {
     return det3(
         m->x_basis.x, m->x_basis.y, m->x_basis.z,
@@ -216,7 +216,7 @@ float __cdecl mat3_determinant(cpmat3 m)
     );
 }
 
-void __cdecl mat3_inverse(pmat3 m)
+void CDECL mat3_inverse(pmat3 m)
 {
     float determinant;
 
@@ -258,7 +258,7 @@ void __cdecl mat3_inverse(pmat3 m)
 	md[8] = a22 * determinant;
 }
 
-void __cdecl mat3_normalize(pmat3 m)
+void CDECL mat3_normalize(pmat3 m)
 {
     float determinant;
 
@@ -300,7 +300,7 @@ void __cdecl mat3_normalize(pmat3 m)
 	md[8] = a22 * determinant;
 }
 
-void __cdecl mat3_set_scale(pmat3 m, float x, float y, float z)
+void CDECL mat3_set_scale(pmat3 m, float x, float y, float z)
 {
     m->x_basis.x = x;
     m->x_basis.y = 0.f;
@@ -315,7 +315,7 @@ void __cdecl mat3_set_scale(pmat3 m, float x, float y, float z)
     m->z_basis.z = z;
 }
 
-void __cdecl mat3_set_rotate_x(pmat3 m, float rad)
+void CDECL mat3_set_rotate_x(pmat3 m, float rad)
 {
     m->x_basis.x = 1.f;
     m->x_basis.y = 0.f;
@@ -330,12 +330,12 @@ void __cdecl mat3_set_rotate_x(pmat3 m, float rad)
     m->z_basis.z = m->y_basis.y;
 }
 
-void __cdecl mat3_set_rotate_x_degrees(pmat3 m, float degrees)
+void CDECL mat3_set_rotate_x_degrees(pmat3 m, float degrees)
 {
     mat3_set_rotate_x(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_set_rotate_y(pmat3 m, float rad)
+void CDECL mat3_set_rotate_y(pmat3 m, float rad)
 {
     m->x_basis.x = cosf(rad);
     m->x_basis.y = 0.f;
@@ -350,12 +350,12 @@ void __cdecl mat3_set_rotate_y(pmat3 m, float rad)
     m->z_basis.z = m->x_basis.x;
 }
 
-void __cdecl mat3_set_rotate_y_degrees(pmat3 m, float degrees)
+void CDECL mat3_set_rotate_y_degrees(pmat3 m, float degrees)
 {
     mat3_set_rotate_y(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_set_rotate_z(pmat3 m, float rad)
+void CDECL mat3_set_rotate_z(pmat3 m, float rad)
 {
     m->x_basis.x = cosf(rad);
     m->x_basis.y = sinf(rad);
@@ -370,12 +370,12 @@ void __cdecl mat3_set_rotate_z(pmat3 m, float rad)
     m->z_basis.z = 1.f;
 }
 
-void __cdecl mat3_set_rotate_z_degrees(pmat3 m, float degrees)
+void CDECL mat3_set_rotate_z_degrees(pmat3 m, float degrees)
 {
     mat3_set_rotate_z(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_set_rotate_axis(pmat3 m, float x, float y, float z, float rad)
+void CDECL mat3_set_rotate_axis(pmat3 m, float x, float y, float z, float rad)
 {
     const float c = cosf(rad);
 	const float s = sinf(rad);
@@ -394,12 +394,12 @@ void __cdecl mat3_set_rotate_axis(pmat3 m, float x, float y, float z, float rad)
     m->z_basis.z = z * z * fsu + c;
 }
 
-void __cdecl mat3_set_rotate_axis_degrees(pmat3 m, float x, float y, float z, float degrees)
+void CDECL mat3_set_rotate_axis_degrees(pmat3 m, float x, float y, float z, float degrees)
 {
     mat3_set_rotate_axis(m, x, y, z, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_scale(pmat3 m, float x, float y, float z)
+void CDECL mat3_scale(pmat3 m, float x, float y, float z)
 {
     m->x_basis.x *= x;
     m->x_basis.y *= x;
@@ -414,7 +414,7 @@ void __cdecl mat3_scale(pmat3 m, float x, float y, float z)
     m->z_basis.z *= z;
 }
 
-void __cdecl mat3_rotate_x(pmat3 m, float rad)
+void CDECL mat3_rotate_x(pmat3 m, float rad)
 {
     const float c = cosf(rad);
     const float s = sinf(rad);
@@ -439,12 +439,12 @@ void __cdecl mat3_rotate_x(pmat3 m, float rad)
 	m->z_basis.z -= yz * s;
 }
 
-void __cdecl mat3_rotate_x_degrees(pmat3 m, float degrees)
+void CDECL mat3_rotate_x_degrees(pmat3 m, float degrees)
 {
     mat3_rotate_x(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_rotate_y(pmat3 m, float rad)
+void CDECL mat3_rotate_y(pmat3 m, float rad)
 {
     const float c = cosf(rad);;
     const float s = sinf(rad);
@@ -469,12 +469,12 @@ void __cdecl mat3_rotate_y(pmat3 m, float rad)
 	m->z_basis.z -= xz * s;
 }
 
-void __cdecl mat3_rotate_y_degrees(pmat3 m, float degrees)
+void CDECL mat3_rotate_y_degrees(pmat3 m, float degrees)
 {
     mat3_rotate_y(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_rotate_z(pmat3 m, float rad)
+void CDECL mat3_rotate_z(pmat3 m, float rad)
 {
     const float c = cosf(rad);
     const float s = sinf(rad);
@@ -499,12 +499,12 @@ void __cdecl mat3_rotate_z(pmat3 m, float rad)
 	m->y_basis.z -= xz * s;
 }
 
-void __cdecl mat3_rotate_z_degrees(pmat3 m, float degrees)
+void CDECL mat3_rotate_z_degrees(pmat3 m, float degrees)
 {
     mat3_rotate_z(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat3_rotate_axis(pmat3 m, float x, float y, float z, float rad)
+void CDECL mat3_rotate_axis(pmat3 m, float x, float y, float z, float rad)
 {
     const float c = cosf(rad);
 	const float s = sinf(rad);
@@ -527,12 +527,12 @@ void __cdecl mat3_rotate_axis(pmat3 m, float x, float y, float z, float rad)
     mat3_compose(m, &rot);
 }
 
-void __cdecl mat3_rotate_axis_degrees(pmat3 m, float x, float y, float z, float degrees)
+void CDECL mat3_rotate_axis_degrees(pmat3 m, float x, float y, float z, float degrees)
 {
     mat3_rotate_axis(m, x, y, z, degrees_to_radians(degrees));
 }
 
-int __cdecl mat3_is_equal(cpmat3 m1, cpmat3 m2)
+int CDECL mat3_is_equal(cpmat3 m1, cpmat3 m2)
 {
     return
         vec3_is_equal(&m1->x_basis, &m2->x_basis) &&

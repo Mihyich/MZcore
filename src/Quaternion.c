@@ -5,7 +5,7 @@ extern "C"
 {
 #endif
 
-void __cdecl quat_set(pquat q, float x, float y, float z, float w)
+void CDECL quat_set(pquat q, float x, float y, float z, float w)
 {
     q->x = x;
     q->y = y;
@@ -13,7 +13,7 @@ void __cdecl quat_set(pquat q, float x, float y, float z, float w)
     q->w = w;
 }
 
-float __cdecl quat_square_magnitude(cpquat q)
+float CDECL quat_square_magnitude(cpquat q)
 {
     return dot4(
         q->x, q->y, q->z, q->w,
@@ -21,7 +21,7 @@ float __cdecl quat_square_magnitude(cpquat q)
     );
 }
 
-float __cdecl quat_magnitude(cpquat q)
+float CDECL quat_magnitude(cpquat q)
 {
     return sqrtf(
         dot4(
@@ -31,7 +31,7 @@ float __cdecl quat_magnitude(cpquat q)
     );
 }
 
-void __cdecl quat_normalize(pquat q)
+void CDECL quat_normalize(pquat q)
 {
     float mag = quat_magnitude(q);
 
@@ -46,14 +46,14 @@ void __cdecl quat_normalize(pquat q)
     }
 }
 
-void __cdecl quat_conjugate(pquat q)
+void CDECL quat_conjugate(pquat q)
 {
     q->x = -q->x;
     q->y = -q->y;
     q->z = -q->z;
 }
 
-void __cdecl quat_inverse(pquat q)
+void CDECL quat_inverse(pquat q)
 {
     float inv_mag = quat_square_magnitude(q);
 
@@ -68,7 +68,7 @@ void __cdecl quat_inverse(pquat q)
     }
 }
 
-void __cdecl quat_compose(pquat q1, cpquat q2)
+void CDECL quat_compose(pquat q1, cpquat q2)
 {
     const float w = q1->w;
 	const float x = q1->x;
@@ -81,7 +81,7 @@ void __cdecl quat_compose(pquat q1, cpquat q2)
     q1->w = w * q2->w - x * q2->x - y * q2->y - z * q2->z;
 }
 
-void __cdecl quat_compose_res(cpquat q1, cpquat q2, pquat res)
+void CDECL quat_compose_res(cpquat q1, cpquat q2, pquat res)
 {
     res->x = q1->w * q2->x + q1->x * q2->w + q1->y * q2->z - q1->z * q2->y;
 	res->y = q1->w * q2->y - q1->x * q2->z + q1->y * q2->w + q1->z * q2->x;
@@ -89,7 +89,7 @@ void __cdecl quat_compose_res(cpquat q1, cpquat q2, pquat res)
     res->w = q1->w * q2->w - q1->x * q2->x - q1->y * q2->y - q1->z * q2->z;
 }
 
-void __cdecl quat_set_rotate(pquat q, float x, float y, float z, float rad)
+void CDECL quat_set_rotate(pquat q, float x, float y, float z, float rad)
 {
     rad *= 0.5f;
 
@@ -102,12 +102,12 @@ void __cdecl quat_set_rotate(pquat q, float x, float y, float z, float rad)
     q->w = c;
 }
 
-void __cdecl quat_set_rotate_degrees(pquat q, float x, float y, float z, float degrees)
+void CDECL quat_set_rotate_degrees(pquat q, float x, float y, float z, float degrees)
 {
     quat_set_rotate(q, x, y, z, degrees_to_radians(degrees));
 }
 
-void __cdecl quat_rotate_vec(pvec3 v, cpquat q)
+void CDECL quat_rotate_vec(pvec3 v, cpquat q)
 {
     quat quat_res = *q;
 	quat quat_vec = (quat){ v->x, v->y, v->z, 0.f };

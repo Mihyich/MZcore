@@ -6,6 +6,12 @@ extern "C"
 {
 #endif
 
+#ifdef __linux__
+    #define CDECL 
+#else
+    #define CDECL CDECL
+#endif
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -40,51 +46,51 @@ struct Vector4D
     float w;
 };
 
-void __cdecl vec4_set(pvec4 v, float x, float y, float z, float w);
+void CDECL vec4_set(pvec4 v, float x, float y, float z, float w);
 
-void __cdecl vec4_invert(pvec4 v);
+void CDECL vec4_invert(pvec4 v);
 
-void __cdecl vec4_scale(pvec4 v, float s);
+void CDECL vec4_scale(pvec4 v, float s);
 
-void __cdecl vec4_divide(pvec4 v, float d);
+void CDECL vec4_divide(pvec4 v, float d);
 
-void __cdecl vec4_add(pvec4 v1, cpvec4 v2);
+void CDECL vec4_add(pvec4 v1, cpvec4 v2);
 
-void __cdecl vec4_sub(pvec4 v1, cpvec4 v2);
+void CDECL vec4_sub(pvec4 v1, cpvec4 v2);
 
-void __cdecl vec4_scaled_add(pvec4 v1, cpvec4 v2, float s);
+void CDECL vec4_scaled_add(pvec4 v1, cpvec4 v2, float s);
 
-void __cdecl vec4_scaled_sub(pvec4 v1, cpvec4 v2, float s);
+void CDECL vec4_scaled_sub(pvec4 v1, cpvec4 v2, float s);
 
-void __cdecl vec4_add_n(pvec4 v, int n, ...);
+void CDECL vec4_add_n(pvec4 v, int n, ...);
 
-void __cdecl vec4_sub_n(pvec4 v, int n, ...);
+void CDECL vec4_sub_n(pvec4 v, int n, ...);
 
-void __cdecl vec4_scaled_add_n(pvec4 v, float s, int n, ...);
+void CDECL vec4_scaled_add_n(pvec4 v, float s, int n, ...);
 
-void __cdecl vec4_scaled_sub_n(pvec4 v, float s, int n, ...);
+void CDECL vec4_scaled_sub_n(pvec4 v, float s, int n, ...);
 
-void __cdecl vec4_sum(cpvec4 v1, cpvec4 v2, pvec4 res);
+void CDECL vec4_sum(cpvec4 v1, cpvec4 v2, pvec4 res);
 
-void __cdecl vec4_diff(cpvec4 v1, cpvec4 v2, pvec4 res);
+void CDECL vec4_diff(cpvec4 v1, cpvec4 v2, pvec4 res);
 
-void __cdecl vec4_sum_n(pvec4 res, int n, ...);
+void CDECL vec4_sum_n(pvec4 res, int n, ...);
 
-void __cdecl vec4_component_product(pvec4 v1, cpvec4 v2);
+void CDECL vec4_component_product(pvec4 v1, cpvec4 v2);
 
-void __cdecl vec4_set_component_product(cpvec4 v1, cpvec4 v2, pvec4 res);
+void CDECL vec4_set_component_product(cpvec4 v1, cpvec4 v2, pvec4 res);
 
-float __cdecl vec4_dot_product(cpvec4 v1, cpvec4 v2);
+float CDECL vec4_dot_product(cpvec4 v1, cpvec4 v2);
 
-float __cdecl vec4_det_product(cpvec4 v1, cpvec4 v2, cpvec4 v3, cpvec4 v4);
+float CDECL vec4_det_product(cpvec4 v1, cpvec4 v2, cpvec4 v3, cpvec4 v4);
 
-float __cdecl vec4_square_magnitude(cpvec4 v);
+float CDECL vec4_square_magnitude(cpvec4 v);
 
-float __cdecl vec4_magnitude(cpvec4 v);
+float CDECL vec4_magnitude(cpvec4 v);
 
-void __cdecl vec4_normalize(pvec4 v);
+void CDECL vec4_normalize(pvec4 v);
 
-int __cdecl vec4_is_equal(cpvec4 v1, cpvec4 v2);
+int CDECL vec4_is_equal(cpvec4 v1, cpvec4 v2);
 
 #ifdef __cplusplus
 }

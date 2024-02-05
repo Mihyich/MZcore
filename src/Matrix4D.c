@@ -5,7 +5,7 @@ extern "C"
 {
 #endif
 
-void __cdecl mat4_set(
+void CDECL mat4_set(
     pmat4 m,
     float xx, float xy, float xz, float xw,
     float yx, float yy, float yz, float yw,
@@ -33,7 +33,7 @@ void __cdecl mat4_set(
     m->w_basis.w = ww;
 }
 
-void __cdecl mat4_set_x_basis(pmat4 m, float x, float y, float z, float w)
+void CDECL mat4_set_x_basis(pmat4 m, float x, float y, float z, float w)
 {
     m->x_basis.x = x;
     m->x_basis.y = y;
@@ -41,7 +41,7 @@ void __cdecl mat4_set_x_basis(pmat4 m, float x, float y, float z, float w)
     m->x_basis.w = w;
 }
 
-void __cdecl mat4_set_y_basis(pmat4 m, float x, float y, float z, float w)
+void CDECL mat4_set_y_basis(pmat4 m, float x, float y, float z, float w)
 {
     m->y_basis.x = x;
     m->y_basis.y = y;
@@ -49,7 +49,7 @@ void __cdecl mat4_set_y_basis(pmat4 m, float x, float y, float z, float w)
     m->y_basis.w = w;
 }
 
-void __cdecl mat4_set_z_basis(pmat4 m, float x, float y, float z, float w)
+void CDECL mat4_set_z_basis(pmat4 m, float x, float y, float z, float w)
 {
     m->z_basis.x = x;
     m->z_basis.y = y;
@@ -57,7 +57,7 @@ void __cdecl mat4_set_z_basis(pmat4 m, float x, float y, float z, float w)
     m->z_basis.w = w;
 }
 
-void __cdecl mat4_set_w_basis(pmat4 m, float x, float y, float z, float w)
+void CDECL mat4_set_w_basis(pmat4 m, float x, float y, float z, float w)
 {
     m->w_basis.x = x;
     m->w_basis.y = y;
@@ -65,7 +65,7 @@ void __cdecl mat4_set_w_basis(pmat4 m, float x, float y, float z, float w)
     m->w_basis.w = w;
 }
 
-void __cdecl mat4_set_basises(pmat4 m, cpvec4 x, cpvec4 y, cpvec4 z, cpvec4 w)
+void CDECL mat4_set_basises(pmat4 m, cpvec4 x, cpvec4 y, cpvec4 z, cpvec4 w)
 {
     m->x_basis = *x;
     m->y_basis = *y;
@@ -73,7 +73,7 @@ void __cdecl mat4_set_basises(pmat4 m, cpvec4 x, cpvec4 y, cpvec4 z, cpvec4 w)
     m->w_basis = *w;
 }
 
-void __cdecl mat4_transpose(pmat4 m)
+void CDECL mat4_transpose(pmat4 m)
 {
     _swap_u(&m->x_basis.y, &m->y_basis.x, sizeof(float));
     _swap_u(&m->x_basis.z, &m->z_basis.x, sizeof(float));
@@ -83,7 +83,7 @@ void __cdecl mat4_transpose(pmat4 m)
     _swap_u(&m->z_basis.w, &m->w_basis.z, sizeof(float));
 }
 
-void __cdecl mat4_scalar_mult(pmat4 m, float s)
+void CDECL mat4_scalar_mult(pmat4 m, float s)
 {
     m->x_basis.x *= s;
     m->x_basis.y *= s;
@@ -106,7 +106,7 @@ void __cdecl mat4_scalar_mult(pmat4 m, float s)
     m->w_basis.w *= s;
 }
 
-void __cdecl mat4_divide(pmat4 m, float d)
+void CDECL mat4_divide(pmat4 m, float d)
 {
     m->x_basis.x /= d;
     m->x_basis.y /= d;
@@ -129,7 +129,7 @@ void __cdecl mat4_divide(pmat4 m, float d)
     m->w_basis.w /= d;
 }
 
-void __cdecl mat4_add(pmat4 m1, cpmat4 m2)
+void CDECL mat4_add(pmat4 m1, cpmat4 m2)
 {
     m1->x_basis.x += m2->x_basis.x;
     m1->x_basis.y += m2->x_basis.y;
@@ -152,7 +152,7 @@ void __cdecl mat4_add(pmat4 m1, cpmat4 m2)
     m1->w_basis.w += m2->w_basis.w;
 }
 
-void __cdecl mat4_sub(pmat4 m1, cpmat4 m2)
+void CDECL mat4_sub(pmat4 m1, cpmat4 m2)
 {
     m1->x_basis.x -= m2->x_basis.x;
     m1->x_basis.y -= m2->x_basis.y;
@@ -175,7 +175,7 @@ void __cdecl mat4_sub(pmat4 m1, cpmat4 m2)
     m1->w_basis.w -= m2->w_basis.w;
 }
 
-void __cdecl mat4_sum(cpmat4 m1, cpmat4 m2, pmat4 res)
+void CDECL mat4_sum(cpmat4 m1, cpmat4 m2, pmat4 res)
 {
     res->x_basis.x = m1->x_basis.x + m2->x_basis.x;
     res->x_basis.y = m1->x_basis.y + m2->x_basis.y;
@@ -198,7 +198,7 @@ void __cdecl mat4_sum(cpmat4 m1, cpmat4 m2, pmat4 res)
     res->w_basis.w = m1->w_basis.w + m2->w_basis.w;
 }
 
-void __cdecl mat4_diff(cpmat4 m1, cpmat4 m2, pmat4 res)
+void CDECL mat4_diff(cpmat4 m1, cpmat4 m2, pmat4 res)
 {
     res->x_basis.x = m1->x_basis.x - m2->x_basis.x;
     res->x_basis.y = m1->x_basis.y - m2->x_basis.y;
@@ -221,7 +221,7 @@ void __cdecl mat4_diff(cpmat4 m1, cpmat4 m2, pmat4 res)
     res->w_basis.w = m1->w_basis.w - m2->w_basis.w;
 }
 
-void __cdecl mat4_compose(pmat4 m1, cpmat4 m2)
+void CDECL mat4_compose(pmat4 m1, cpmat4 m2)
 {
     const float xx = m1->x_basis.x;
     const float xy = m1->x_basis.y;
@@ -262,7 +262,7 @@ void __cdecl mat4_compose(pmat4 m1, cpmat4 m2)
     md1[15] = dot4(xw, yw, zw, md1[15], md2[12], md2[13], md2[14], md1[15]);
 }
 
-void __cdecl mat4_transform(cpmat4 m, pvec4 v)
+void CDECL mat4_transform(cpmat4 m, pvec4 v)
 {
     const float x = v->x;
     const float y = v->y;
@@ -275,7 +275,7 @@ void __cdecl mat4_transform(cpmat4 m, pvec4 v)
     v->w = dot4(md[3], md[7], md[11], md[15], x, y, z, v->w);
 }
 
-void __cdecl mat4_compose_res(cpmat4 m1, cpmat4 m2, pmat4 res)
+void CDECL mat4_compose_res(cpmat4 m1, cpmat4 m2, pmat4 res)
 {
     const float *md1 = (const float*)m1;
     const float *md2 = (const float*)m2;
@@ -302,7 +302,7 @@ void __cdecl mat4_compose_res(cpmat4 m1, cpmat4 m2, pmat4 res)
     rd[15] = dot4(md1[3], md1[7], md1[11], md1[15], md2[12], md2[13], md2[14], md2[15]);
 }
 
-void __cdecl mat4_transform_res(cpmat4 m, cpvec4 v, pvec4 res)
+void CDECL mat4_transform_res(cpmat4 m, cpvec4 v, pvec4 res)
 {
     const float *md = (const float*)m;
 
@@ -312,7 +312,7 @@ void __cdecl mat4_transform_res(cpmat4 m, cpvec4 v, pvec4 res)
     res->w = dot4(md[3], md[7], md[11], md[15], v->x, v->y, v->z, v->w);
 }
 
-float __cdecl mat4_determinant(cpmat4 m)
+float CDECL mat4_determinant(cpmat4 m)
 {
     return det4(
         m->x_basis.x, m->x_basis.y, m->x_basis.z, m->x_basis.w,
@@ -322,7 +322,7 @@ float __cdecl mat4_determinant(cpmat4 m)
     );
 }
 
-void __cdecl mat4_inverse(pmat4 m)
+void CDECL mat4_inverse(pmat4 m)
 {
     float determinant;
 
@@ -425,7 +425,7 @@ void __cdecl mat4_inverse(pmat4 m)
 	md[15] = a33 * determinant;
 }
 
-void __cdecl mat4_normalize(pmat4 m)
+void CDECL mat4_normalize(pmat4 m)
 {
     float determinant;
 
@@ -528,7 +528,7 @@ void __cdecl mat4_normalize(pmat4 m)
 	md[15] = a33 * determinant;
 }
 
-void __cdecl mat4_set_scale(pmat4 m, float x, float y, float z)
+void CDECL mat4_set_scale(pmat4 m, float x, float y, float z)
 {
     m->x_basis.x = x;
     m->x_basis.y = 0.f;
@@ -551,7 +551,7 @@ void __cdecl mat4_set_scale(pmat4 m, float x, float y, float z)
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_translate(pmat4 m, float x, float y, float z)
+void CDECL mat4_set_translate(pmat4 m, float x, float y, float z)
 {
     m->x_basis.x = 1.f;
     m->x_basis.y = 0.f;
@@ -574,7 +574,7 @@ void __cdecl mat4_set_translate(pmat4 m, float x, float y, float z)
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_rotate_x(pmat4 m, float rad)
+void CDECL mat4_set_rotate_x(pmat4 m, float rad)
 {
     m->x_basis.x = 1.f;
     m->x_basis.y = 0.f;
@@ -597,12 +597,12 @@ void __cdecl mat4_set_rotate_x(pmat4 m, float rad)
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_rotate_x_degrees(pmat4 m, float degrees)
+void CDECL mat4_set_rotate_x_degrees(pmat4 m, float degrees)
 {
     mat4_set_rotate_x(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat4_set_rotate_y(pmat4 m, float rad)
+void CDECL mat4_set_rotate_y(pmat4 m, float rad)
 {
     m->x_basis.x = cosf(rad);
     m->x_basis.y = 0.f;
@@ -625,12 +625,12 @@ void __cdecl mat4_set_rotate_y(pmat4 m, float rad)
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_rotate_y_degrees(pmat4 m, float degrees)
+void CDECL mat4_set_rotate_y_degrees(pmat4 m, float degrees)
 {
     mat4_set_rotate_y(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat4_set_rotate_z(pmat4 m, float rad)
+void CDECL mat4_set_rotate_z(pmat4 m, float rad)
 {
     m->x_basis.x = cosf(rad);
     m->x_basis.y = sinf(rad);
@@ -653,12 +653,12 @@ void __cdecl mat4_set_rotate_z(pmat4 m, float rad)
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_rotate_z_degrees(pmat4 m, float degrees)
+void CDECL mat4_set_rotate_z_degrees(pmat4 m, float degrees)
 {
     mat4_set_rotate_z(m, degrees_to_radians(degrees));
 }
 
-void __cdecl mat4_set_rotate_axis(pmat4 m, float x, float y, float z, float rad)
+void CDECL mat4_set_rotate_axis(pmat4 m, float x, float y, float z, float rad)
 {
     const float c = cosf(rad);
 	const float s = sinf(rad);
@@ -685,12 +685,12 @@ void __cdecl mat4_set_rotate_axis(pmat4 m, float x, float y, float z, float rad)
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_rotate_axis_degrees(pmat4 m, float x, float y, float z, float degrees)
+void CDECL mat4_set_rotate_axis_degrees(pmat4 m, float x, float y, float z, float degrees)
 {
     mat4_set_rotate_axis(m, x, y, z, degrees_to_radians(degrees));
 }
 
-void __cdecl mat4_set_ortho_projection(pmat4 m, float l, float r, float b, float t, float f, float n)
+void CDECL mat4_set_ortho_projection(pmat4 m, float l, float r, float b, float t, float f, float n)
 {
     m->x_basis.x = 2.f / (r - l);
     m->x_basis.y = 0.f;
@@ -713,7 +713,7 @@ void __cdecl mat4_set_ortho_projection(pmat4 m, float l, float r, float b, float
     m->w_basis.w = 1.f;
 }
 
-void __cdecl mat4_set_perspective_projection(pmat4 m, float w, float h, float n, float f, float fov)
+void CDECL mat4_set_perspective_projection(pmat4 m, float w, float h, float n, float f, float fov)
 {
 	const float inv_k = 1.f / (w / h);
 	const float inv_tangent = 1.f / tanf(fov / 2.f);
@@ -740,7 +740,7 @@ void __cdecl mat4_set_perspective_projection(pmat4 m, float w, float h, float n,
     m->w_basis.w = 0.f;
 }
 
-int __cdecl mat4_is_equal(cpmat4 m1, cpmat4 m2)
+int CDECL mat4_is_equal(cpmat4 m1, cpmat4 m2)
 {
     return
         vec4_is_equal(&m1->x_basis, &m2->x_basis) &&
