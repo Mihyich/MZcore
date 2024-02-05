@@ -4,18 +4,17 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/inc/",
-                "C:/VulkanSDK/1.3.268.0/Include"
+                "/home/mihail/VulkanSDK/1.3.268.0/x86_64/include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "windowsSdkVersion": "10.0.18362.0",
-            "compilerPath": "C:/mingw64/bin/g++.exe",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c99",
             "cppStandard": "c++11",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

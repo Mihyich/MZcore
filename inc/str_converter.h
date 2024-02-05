@@ -1,7 +1,6 @@
 #ifndef STR_CONVERTER_H
 #define STR_CONVERTER_H
 
-#include <Windows.h>
 #include <string>
 
 /// @brief Конвертация строки string в wstring

@@ -79,8 +79,14 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
 void Graphics::Vulkan_Renderer::set_std_instance_extensions(bool debug)
 {
     this->req_extensions.clear();
+
+#ifdef _WIN32
     this->req_extensions.push_back("VK_KHR_surface");
     this->req_extensions.push_back("VK_KHR_win32_surface");
+#elif __linux__
+    this->req_extensions.push_back("VK_KHR_surface");
+    this->req_extensions.push_back("VK_KHR_xcb_surface");
+#endif
 
     if (debug)
     {
@@ -90,10 +96,13 @@ void Graphics::Vulkan_Renderer::set_std_instance_extensions(bool debug)
 
 void Graphics::Vulkan_Renderer::set_std_instance_layers(bool debug)
 {
+#ifdef _WIN32
     if (debug)
     {
         this->req_layers.push_back("VK_LAYER_KHRONOS_validation");
     }
+#elif __linux__
+#endif
 }
 
 VkResult Graphics::Vulkan_Renderer::enumerate_instance_extensions_properties(void)

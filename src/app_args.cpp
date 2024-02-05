@@ -5,9 +5,8 @@ namespace app
     bool vk_debug = true;
     bool debugging = true;
 
-    Window game_wnd;
-    Window dbg_wnd;
-    Console cnsl;
+    XWindow game_wnd;
+    XWindow dbg_wnd;
 
     Graphics::Vulkan_Renderer vk_renderer;
 

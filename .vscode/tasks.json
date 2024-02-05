@@ -5,7 +5,7 @@
         {
             "label": "Debug",
             "type": "shell",
-            "command": "mingw32-make",
+            "command": "make",
             "args": 
             [
                 "app.exe",
@@ -16,7 +16,7 @@
         {
             "label": "Release",
             "type": "shell",
-            "command": "mingw32-make",
+            "command": "make",
             "args": 
             [
                 "app.exe"
