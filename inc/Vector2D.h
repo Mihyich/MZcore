@@ -2,7 +2,7 @@
 #define VECTOR2D_H
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -80,7 +80,7 @@ void __cdecl vec2_reflect(cpvec2 r, cpvec2 n, pvec2 res);
 
 int __cdecl vec2_is_equal(cpvec2 v1, cpvec2 v2);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 

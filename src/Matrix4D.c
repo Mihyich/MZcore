@@ -584,7 +584,7 @@ void __cdecl mat4_set_rotate_x(pmat4 m, float rad)
     m->y_basis.x = 0.f;
     m->y_basis.y = cosf(rad);
     m->y_basis.z = sinf(rad);
-    m->y_basis.w = 0.f; 
+    m->y_basis.w = 0.f;
 
     m->z_basis.x = 0.f;
     m->z_basis.y = -m->y_basis.z;

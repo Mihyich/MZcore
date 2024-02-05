@@ -1,7 +1,7 @@
 #include "Vector3D.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -173,7 +173,7 @@ void __cdecl vec3_sum_n(pvec3 res, int n, ...)
 
         res->x += a->x;
         res->y += a->y;
-        res->z += a->z; 
+        res->z += a->z;
 
         --n;
     }
@@ -262,12 +262,12 @@ void __cdecl vec3_reflect(cpvec3 r, cpvec3 n, pvec3 res)
     vec3_scale(&roof, 2.f);
     vec3_diff(&roof, r, res);
 }
-  
+
 int __cdecl vec3_is_equal(cpvec3 v1, cpvec3 v2)
 {
     return is_equal(v1->x, v2->x) && is_equal(v1->y, v2->y) && is_equal(v1->z, v2->z);
 }
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif

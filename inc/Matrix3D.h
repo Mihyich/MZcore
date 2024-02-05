@@ -2,7 +2,7 @@
 #define MATRIX3D_H
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -102,7 +102,7 @@ void __cdecl mat3_rotate_axis_degrees(pmat3 m, float x, float y, float z, float 
 
 int __cdecl mat3_is_equal(cpmat3 m1, cpmat3 m2);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 

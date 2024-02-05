@@ -1,20 +1,20 @@
 #include "Vector2D.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
 void __cdecl vec2_set(pvec2 v, float x, float y)
 {
     v->x = x;
-    v->y = y; 
+    v->y = y;
 }
 
 void __cdecl vec2_invert(pvec2 v)
 {
     v->x = -v->x;
-    v->y = -v->y; 
+    v->y = -v->y;
 }
 
 void __cdecl vec2_scale(pvec2 v, float s)
@@ -158,7 +158,7 @@ void __cdecl vec2_sum_n(pvec2 res, int n, ...)
         a = va_arg(vl, cpvec2);
 
         res->x += a->x;
-        res->y += a->y; 
+        res->y += a->y;
 
         --n;
     }
@@ -243,6 +243,6 @@ int __cdecl vec2_is_equal(cpvec2 v1, cpvec2 v2)
     return is_equal(v1->x, v2->x) && is_equal(v1->y, v2->y);
 }
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif

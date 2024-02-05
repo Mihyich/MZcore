@@ -1,7 +1,7 @@
 #include "Matrix2D.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -229,7 +229,7 @@ void __cdecl mat2_set_rotate_degrees(pmat2 m, float degrees)
 
 void __cdecl mat2_scale(pmat2 m, float x, float y)
 {
-    float *md = (float*)m;  
+    float *md = (float*)m;
 
     md[0] *= x;
 	md[1] *= x;
@@ -240,7 +240,7 @@ void __cdecl mat2_scale(pmat2 m, float x, float y)
 
 void __cdecl mat2_rotate(pmat2 m, float rad)
 {
-    float *md = (float*)m;  
+    float *md = (float*)m;
 
     float c = cosf(rad);
 	float s = sinf(rad);
@@ -265,8 +265,8 @@ int __cdecl mat2_is_equal(cpmat2 m1, cpmat2 m2)
     return
         vec2_is_equal(&m1->x_basis, &m2->x_basis) &&
         vec2_is_equal(&m1->y_basis, &m2->y_basis);
-} 
+}
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif

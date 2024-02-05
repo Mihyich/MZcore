@@ -1,7 +1,7 @@
 #include "Matrix3D.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -540,6 +540,6 @@ int __cdecl mat3_is_equal(cpmat3 m1, cpmat3 m2)
         vec3_is_equal(&m1->z_basis, &m2->z_basis);
 }
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif

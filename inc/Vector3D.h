@@ -2,7 +2,7 @@
 #define VECTOR3D_H
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -82,7 +82,7 @@ void __cdecl vec3_reflect(cpvec3 r, cpvec3 n, pvec3 res);
 
 int __cdecl vec3_is_equal(cpvec3 v1, cpvec3 v2);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 

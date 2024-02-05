@@ -2,7 +2,7 @@
 #define MATRIX2D_H
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -70,7 +70,7 @@ void __cdecl mat2_rotate_degrees(pmat2 m, float degrees);
 
 int __cdecl mat2_is_equal(cpmat2 m1, cpmat2 m2);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 

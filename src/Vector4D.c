@@ -260,7 +260,7 @@ void __cdecl vec4_normalize(pvec4 v)
 
 int __cdecl vec4_is_equal(cpvec4 v1, cpvec4 v2)
 {
-    return 
+    return
         is_equal(v1->x, v2->x) &&
         is_equal(v1->y, v2->y) &&
         is_equal(v1->z, v2->z) &&

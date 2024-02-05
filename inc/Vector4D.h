@@ -1,5 +1,5 @@
 #ifndef VECTOR4D_H
-#define VECTOR4D_H 
+#define VECTOR4D_H
 
 #ifdef __cplusplus
 extern "C"
