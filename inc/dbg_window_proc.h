@@ -4,7 +4,6 @@
 #include "window.h"
 #include "app_args.h"
 #include "game_window_proc.h"
-#include "resource.h"
 
 void switch_menu_state(HWND hWnd, WPARAM wParam);
 

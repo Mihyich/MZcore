@@ -49,7 +49,6 @@ LRESULT debug_window_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch (msg)
     {
     case WM_CREATE:
-        SetMenu(hWnd, LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_MENU1)));
         return EXIT_SUCCESS;
 
     case WM_SIZE:
@@ -69,27 +68,6 @@ LRESULT debug_window_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         app::game_cycle_work = false;
         PostQuitMessage(0);
         return EXIT_SUCCESS;
-
-    case WM_COMMAND:
-    {
-        switch (LOWORD(wParam))
-        {
-        case ID_RENDER:
-            switch_menu_state(hWnd, wParam);
-            break;
-        case ID_SETTINGS:
-            switch_menu_state(hWnd, wParam);
-            break;
-        case ID_OUTPUT:
-            switch_menu_state(hWnd, wParam);
-            break;
-        case ID_EXIT:
-            app::game_cycle_work = false;
-            PostQuitMessage(0);
-            break;
-        }
-        return EXIT_SUCCESS;
-    }
 
     default:
         return DefWindowProc(hWnd, msg, wParam, lParam);
