@@ -3,6 +3,7 @@
 int XWindow::create(int width, int height, const char *title)
 {
     int err = EXIT_SUCCESS;
+    XSetWindowAttributes windowAttributes;
 
     if (display || screen || root || window)
         err = ERR_WND_CPY;
@@ -27,16 +28,16 @@ int XWindow::create(int width, int height, const char *title)
     
     if (!err)
     {
-        window = XCreateSimpleWindow(display, root, 0, 0, width, height, 1,
-                                    BlackPixel(display, screen),
-                                    WhitePixel(display, screen));
+        windowAttributes.background_pixel = WhitePixel(display, screen);
+        windowAttributes.border_pixel = BlackPixel(display, screen);
+        windowAttributes.event_mask = ExposureMask | KeyPressMask | ButtonPressMask | StructureNotifyMask;
+
+        window = XCreateWindow(
+            display, root, 0, 0, width, height, 1,
+            CopyFromParent, InputOutput, CopyFromParent,
+            CWBackPixel | CWBorderPixel | CWEventMask, &windowAttributes);
 
         if (!window) err = ERR_WND_WND;
-    }
-    
-    if (!err && !XSelectInput(display, window, ExposureMask | KeyPressMask | ButtonPressMask | StructureNotifyMask))
-    {
-        err = ERR_WND_SLCT_INPT;
     }
     
     if (!err && !XStoreName(display, window, title))
@@ -89,12 +90,6 @@ void XWindow::event_loop(void)
 
                 break;
             }
-            case DestroyNotify:
-                loop_running = false;
-                break;
-
-            default:
-                break;
             }
         }
     }
