@@ -25,7 +25,7 @@ namespace Graphics
         case VK_PHYSICAL_DEVICE_TYPE_CPU:
             strncpy(name, "CPU", MAX_VK_PHYSICAL_DEVICE_TYPE_NAME + 1);
             break;
-        
+
         default:
             strncpy(name, "UNKNOWN", MAX_VK_PHYSICAL_DEVICE_TYPE_NAME + 1);
             break;

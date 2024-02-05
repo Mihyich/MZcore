@@ -71,7 +71,13 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
             this->gen_report_error("vkCreateInstance", nullptr, err);
     }
 
-    // Другие шаги инициализации могут включать в себя создание устройства, swap chain и т.д.
+    // загрузка расширений
+    if (!err)
+        err = load_extensions();
+
+    // поиск доступных устройств
+    if (!err)
+        err = enumerate_physical_devices();
 
     return err;
 }
@@ -180,7 +186,7 @@ VkResult Graphics::Vulkan_Renderer::check_extensions_support(void)
                 "is_extension_supported",
                 tmp_str.data(),
                 err);
-            
+
             err = VK_INCOMPLETE;
             break;
         }
@@ -257,7 +263,7 @@ VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
     VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 
     createInfo.messageType =
-    VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | 
+    VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
     VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
     VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
