@@ -108,7 +108,7 @@ int WINAPI WinMain(
 			MB_OK | MB_ICONINFORMATION);
 	}
 	// игровое окно создано ============================
-	
+
 	// Если нужно то показать окно отладки
 	if (app::debugging && !err && app::dbg_wnd.show(nCmdShow) != EXIT_SUCCESS)
 	{
