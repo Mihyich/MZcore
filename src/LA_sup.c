@@ -1,7 +1,7 @@
 #include "LA_sup.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -16,6 +16,6 @@ void __cdecl _swap_u(void *v1, void *v2, size_t size)
     memcpy(v2, tmp, size);
 }
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif

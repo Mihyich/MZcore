@@ -2,7 +2,7 @@
 #define LA_SUP_H
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -20,7 +20,7 @@ extern "C"
 
 void __cdecl _swap_u(void *v1, void *v2, size_t size);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 
