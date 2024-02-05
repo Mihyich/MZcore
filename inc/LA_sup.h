@@ -6,6 +6,12 @@ extern "C"
 {
 #endif
 
+#ifdef __linux__
+    #define CDECL 
+#else
+    #define CDECL CDECL
+#endif
+
 #include <math.h>
 #include <string.h>
 
@@ -18,7 +24,7 @@ extern "C"
 
 #define degrees_to_radians(degrees) ((degrees) * RAD_PER_DEGREE)
 
-void __cdecl _swap_u(void *v1, void *v2, size_t size);
+void CDECL _swap_u(void *v1, void *v2, size_t size);
 
 #ifdef __cplusplus 
 }

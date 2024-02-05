@@ -5,7 +5,7 @@ extern "C"
 {
 #endif
 
-void __cdecl _swap_u(void *v1, void *v2, size_t size)
+void CDECL _swap_u(void *v1, void *v2, size_t size)
 {
     if (!v1 || !v2 || !size || v1 == v2)
         return;
