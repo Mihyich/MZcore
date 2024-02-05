@@ -11,6 +11,7 @@ OUT_D := $(OUT)\Debug
 VK_INC := C:\VulkanSDK\1.3.268.0\Include
 VK_LIB := C:\VulkanSDK\1.3.268.0\Lib
 
+# Flags
 CFAGS := -std=c99 -Wall -Wextra -Wpedantic -I$(INC) -DUNICODE -D_UNICODE
 CPPFLAGS := -std=c++11 -Wall -Wextra -Wpedantic -I$(INC) -I$(VK_INC) -DUNICODE -D_UNICODE
 
@@ -24,8 +25,8 @@ ifeq ($(mode), release)
 endif
 
 ifeq ($(mode), debug)
-	CFAGS += -g3
-	CPPFLAGS += -g3
+	CFAGS += -D_DEBUG -g
+	CPPFLAGS += -D_DEBUG -g
 	OUT := $(OUT_D)
 endif
 

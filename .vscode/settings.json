@@ -1,5 +1,6 @@
 {
-    "files.associations": {
+    "files.associations":
+    {
         "*.h": "c",
         "stdio.h": "c",
         "stdint.h": "c",
@@ -62,5 +63,8 @@
         "vulkan_dynamic_ext_loader.h": "cpp",
         "vulkan_renderer.h": "cpp",
         "vulkan_messenger.h": "cpp",
-    }
+    },
+
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true
 }
