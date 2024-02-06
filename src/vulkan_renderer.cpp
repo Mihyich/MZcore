@@ -71,13 +71,24 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
             this->gen_report_error("vkCreateInstance", nullptr, err);
     }
 
-    // загрузка расширений
-    if (!err)
-        err = load_extensions();
-
     // поиск доступных устройств
     if (!err)
         err = enumerate_physical_devices();
+
+    // выбор устройства поддерживающего необходимые расширения и слой
+    if (!err)
+    {
+        set_std_devise_extensions();
+        err = choosing_physical_device();
+    }
+
+    // загрузка расширений vulkan
+    if (!err)
+        err = load_extensions();
+
+    // создание отладочного вывода vulkan
+    if (!err && debug)
+        err = create_debug_utils_messenger_ext();
 
     return err;
 }
@@ -160,6 +171,14 @@ VkResult Graphics::Vulkan_Renderer::enumerate_instance_layers_properties(void)
     return err;
 }
 
+bool Graphics::Vulkan_Renderer::is_extension_supported(const char *extension) const
+{
+    for (size_t i = 0; i < this->extensions.size(); ++i)
+        if (strcmp(extension, this->extensions[i].extensionName) == 0)
+            return true;
+    return false;
+}
+
 VkResult Graphics::Vulkan_Renderer::check_extensions_support(void)
 {
     VkResult err = VK_SUCCESS;
@@ -186,6 +205,14 @@ VkResult Graphics::Vulkan_Renderer::check_extensions_support(void)
     return err;
 }
 
+bool Graphics::Vulkan_Renderer::is_layer_supported(const char *layer) const
+{
+    for (size_t i = 0; i < this->layers.size(); ++i)
+        if (strcmp(layer, this->layers[i].layerName) == 0)
+            return true;
+    return false;
+}
+
 VkResult Graphics::Vulkan_Renderer::check_layers_support(void)
 {
     VkResult err = VK_SUCCESS;
@@ -208,6 +235,64 @@ VkResult Graphics::Vulkan_Renderer::check_layers_support(void)
             break;
         }
     }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
+{
+    VkResult err = VK_SUCCESS;
+    uint32_t device_count = 0;
+
+    this->physical_devices.clear();
+
+    // получить количество физических устройств
+    if ((err = vkEnumeratePhysicalDevices(instance, &device_count, nullptr)) != VK_SUCCESS)
+        this->gen_report_error("vkEnumeratePhysicalDevices", nullptr, err);
+
+    // проверить что нашлось хотя бы одно устройство
+    if (!err && !device_count)
+    {
+        err = VkResult::VK_INCOMPLETE; // самый подходящий код возврата, который я смог найти
+        this->gen_report_error("vkEnumeratePhysicalDevices",
+                               "pc is out of any physical devices",
+                               err);
+    }
+
+    // получить информацию о физических устройствах
+    if (!err)
+    {
+        this->physical_devices.resize(device_count);
+
+        if ((err = vkEnumeratePhysicalDevices(instance, &device_count, physical_devices.data())) != VK_SUCCESS)
+            this->gen_report_error("vkEnumeratePhysicalDevices", nullptr, err);
+    }
+
+    return err;
+}
+
+void Graphics::Vulkan_Renderer::set_std_devise_extensions(void)
+{
+    this->req_device_extensions.clear();
+    this->req_device_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+}
+
+VkResult Graphics::Vulkan_Renderer::choosing_physical_device(void)
+{
+    VkResult err = VK_INCOMPLETE;
+
+    for (VkPhysicalDevice vpd : physical_devices)
+    {
+        if (check_device_extension_support(&vpd, this->req_device_extensions.data(), this->req_device_extensions.size()) == VK_SUCCESS)
+        {
+            this->physical_device = vpd;
+            err = VK_SUCCESS;
+            break;
+        }
+    }
+
+    if (err)
+        this->gen_report_error("choosing_physical_device", "no any suitable physical device");
 
     return err;
 }
@@ -261,9 +346,9 @@ VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
     createInfo.pfnUserCallback = vk_debug_msg_callback;
     createInfo.pUserData = nullptr;
 
-    err = vkCreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
+    err = vkCreateDebugUtilsMessengerEXT(this->instance, &createInfo, nullptr, &debugMessenger);
 
-    if (!err)
+    if (err)
     {
         this->gen_report_error(
             "vkCreateDebugUtilsMessengerEXT",
@@ -273,54 +358,6 @@ VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
     }
 
     return err;
-}
-
-VkResult Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
-{
-    VkResult err = VK_SUCCESS;
-    uint32_t device_count = 0;
-
-    this->physical_devices.clear();
-
-    // получить количество физических устройств
-    if ((err = vkEnumeratePhysicalDevices(instance, &device_count, nullptr)) != VK_SUCCESS)
-        this->gen_report_error("vkEnumeratePhysicalDevices", nullptr, err);
-
-    // проверить что нашлось хотя бы одно устройство
-    if (!err && !device_count)
-    {
-        err = VkResult::VK_INCOMPLETE; // самый подходящий код возврата, который я смог найти
-        this->gen_report_error("vkEnumeratePhysicalDevices",
-                               "pc is out of any physical devices",
-                               err);
-    }
-
-    // получить информацию о физических устройствах
-    if (!err)
-    {
-        this->physical_devices.resize(device_count);
-
-        if ((err = vkEnumeratePhysicalDevices(instance, &device_count, physical_devices.data())) != VK_SUCCESS)
-            this->gen_report_error("vkEnumeratePhysicalDevices", nullptr, err);
-    }
-
-    return err;
-}
-
-bool Graphics::Vulkan_Renderer::is_layer_supported(const char *layer) const
-{
-    for (size_t i = 0; i < this->layers.size(); ++i)
-        if (strcmp(layer, this->layers[i].layerName) == 0)
-            return true;
-    return false;
-}
-
-bool Graphics::Vulkan_Renderer::is_extension_supported(const char *extension) const
-{
-    for (size_t i = 0; i < this->extensions.size(); ++i)
-        if (strcmp(extension, this->extensions[i].extensionName) == 0)
-            return true;
-    return false;
 }
 
 void Graphics::Vulkan_Renderer::output_version(void) const
@@ -387,6 +424,13 @@ void Graphics::Vulkan_Renderer::output_physical_devices(void) const
     }
 }
 
+void Graphics::Vulkan_Renderer::output_choosen_physical_device(void) const
+{
+    printf("----------------------------------------\n");
+    printf("Using physical device:\n");
+    output_physical_device(&this->physical_device);
+}
+
 VkLayerProperties *Graphics::Vulkan_Renderer::get_instance_layers_properties_arr(size_t *lenght)
 {
     *lenght = this->layers.size();
@@ -407,7 +451,7 @@ VkPhysicalDevice *Graphics::Vulkan_Renderer::get_physical_devices_arr(size_t *le
 
 Graphics::Vulkan_Renderer::~Vulkan_Renderer()
 {
-
+    if (this->instance) vkDestroyInstance(instance, nullptr);
 }
 
 void Graphics::Vulkan_Renderer::gen_report_error(const char *func_name, const char *description, int err_code)

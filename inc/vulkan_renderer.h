@@ -35,18 +35,21 @@ namespace Graphics
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
     	std::vector<VkQueueFamilyProperties> queue_family_props; // семейтва очередей
 
-        VkPhysicalDevice phycical_device = VK_NULL_HANDLE; // выбранное физическиле устройство
+        VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
 
     	// информация о последней ошибке
     	std::string error_report;
 
     public:
 
-        // запрашиваемые расширения
+        // запрашиваемые расширения экземпляра vulkan
         std::vector<const char*> req_extensions;
 
-        // запрашиваемые слои
+        // запрашиваемые слои экземпляра vulkan
         std::vector<const char*> req_layers;
+
+        // запрашиваемые расширения физического устройства
+        std::vector<const char*> req_device_extensions;
 
         std::string *get_error_report(void);
 
@@ -62,19 +65,23 @@ namespace Graphics
 
     	VkResult enumerate_instance_layers_properties(void);
 
+        bool is_extension_supported(const char *extension) const;
+
         VkResult check_extensions_support(void);
 
+        bool is_layer_supported(const char *layers) const;
+
         VkResult check_layers_support(void);
+
+        VkResult enumerate_physical_devices(void);
+
+        void set_std_devise_extensions(void);
+
+        VkResult choosing_physical_device(void);
 
         VkResult load_extensions(void);
 
         VkResult create_debug_utils_messenger_ext(void);
-
-    	VkResult enumerate_physical_devices(void);
-
-        bool is_layer_supported(const char *layers) const;
-
-        bool is_extension_supported(const char *extension) const;
 
     	VkResult get_physical_device_queue_family_properties(const VkPhysicalDevice device);
 
@@ -87,6 +94,8 @@ namespace Graphics
     	void output_instance_extensions_preperties(void) const;
 
     	void output_physical_devices(void) const;
+
+        void output_choosen_physical_device(void) const;
 
         VkLayerProperties *get_instance_layers_properties_arr(size_t *lenght);
 

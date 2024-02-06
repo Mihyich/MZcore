@@ -37,16 +37,16 @@ int WINAPI WinMain(
 	if (!err && app::debugging)
 	{
 		// Создание консоли
-		if (!app::cnsl.create())
-		{
-			MessageBox(
-				NULL,
-				L"Не удалось создать консоль...\n",
-				L"app::cnsl.create() error",
-				MB_OK | MB_ICONINFORMATION);
+		// if (!app::cnsl.create())
+		// {
+		// 	MessageBox(
+		// 		NULL,
+		// 		L"Не удалось создать консоль...\n",
+		// 		L"app::cnsl.create() error",
+		// 		MB_OK | MB_ICONINFORMATION);
 
-			err = ERR_CNSL_CREATE;
-		}
+		// 	err = ERR_CNSL_CREATE;
+		// }
 
 		// app::cnsl.set_pos(0, 0);
 		// app::cnsl.set_size(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
@@ -147,13 +147,14 @@ int WINAPI WinMain(
 			MB_OK | MB_ICONINFORMATION);
 	}
 
-    // некий вывод того чего получилось в vulkane
+    // некий вывод того чего получилось в vulkan'е
 	if (!err)
 	{
 		app::vk_renderer.output_version();
         app::vk_renderer.output_instance_extensions_preperties();
 		app::vk_renderer.output_instance_layers_properties();
 		app::vk_renderer.output_physical_devices();
+        app::vk_renderer.output_choosen_physical_device();
 	}
 
 	// Запустить игровой цикл

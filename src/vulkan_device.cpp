@@ -54,4 +54,46 @@ namespace Graphics
 
         // Другие свойства...
     }
+
+    VkResult check_device_extension_support(VkPhysicalDevice *vpd, const char **req_ext, size_t count)
+    {
+        VkResult err = VK_SUCCESS;
+        uint32_t extensionCount = 0;
+        std::vector<VkExtensionProperties> extensions;
+
+        err = vkEnumerateDeviceExtensionProperties(*vpd, nullptr, &extensionCount, nullptr);
+
+        if (!err)
+        {
+            extensions.resize(extensionCount);
+            err = vkEnumerateDeviceExtensionProperties(*vpd, nullptr, &extensionCount, extensions.data());
+        }
+
+        if (!err)
+        {
+            bool exist;
+
+            for (size_t i = 0; i < count; ++i)
+            {
+                exist = false;
+
+                for (VkExtensionProperties aext : extensions)
+                {
+                    if (strcmp(*(req_ext + i), aext.extensionName) == 0)
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+
+                if (!exist)
+                {
+                    err = VK_ERROR_EXTENSION_NOT_PRESENT;
+                    break;
+                }
+            }
+        }
+
+        return err;
+    }
 }
