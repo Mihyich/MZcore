@@ -127,7 +127,7 @@ BOOL Window::create(
     return rs;
 }
 
-VOID Window::destoy(void)
+VOID Window::destroy(void)
 {
     // Уничтожение окна
     if (hWnd != NULL)

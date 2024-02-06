@@ -164,8 +164,8 @@ int WINAPI WinMain(
 		launch_game_loop();
 	}
 
-	app::game_wnd.destoy();
-	if (app::debugging) app::dbg_wnd.destoy();
+	app::game_wnd.destroy();
+	if (app::debugging) app::dbg_wnd.destroy();
 	app::cnsl.destroy();
 	return err;
 }

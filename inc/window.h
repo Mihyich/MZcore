@@ -79,7 +79,7 @@ public:
         INT cmdShow);
 
     /// @brief Уничтожение окна
-    VOID destoy(void);
+    VOID destroy(void);
 
     /// @brief Обработать все сообщения системы для этого окна
     VOID peek_msgs(void) const;
