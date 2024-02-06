@@ -25,8 +25,8 @@ ifeq ($(mode), release)
 endif
 
 ifeq ($(mode), debug)
-	CFAGS += -D_DEBUG -g
-	CPPFLAGS += -D_DEBUG -g
+	CFAGS += -D_DEBUG -g3
+	CPPFLAGS += -D_DEBUG -g3
 	OUT := $(OUT_D)
 endif
 
@@ -62,4 +62,3 @@ clean:
 	@if exist ".\*.exe" del /q .\*.exe
 	@if exist ".\*dll" del /q .\*dll
 	@if exist ".\*lib" del /q .\*lib
-	
