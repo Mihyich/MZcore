@@ -82,6 +82,10 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
         err = choosing_physical_device();
     }
 
+    // поиск семейств очередей у ф. у.
+    if (!err)
+        err = get_physical_device_queue_family_properties();
+
     // загрузка расширений vulkan
     if (!err)
         err = load_extensions();
@@ -360,6 +364,35 @@ VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
     return err;
 }
 
+VkResult Graphics::Vulkan_Renderer::get_physical_device_queue_family_properties(void)
+{
+    VkResult err = VK_SUCCESS;
+    uint32_t queue_count = 0;
+
+    vkGetPhysicalDeviceQueueFamilyProperties(this->physical_device, &queue_count, nullptr);
+
+    if (!queue_count)
+    {
+        this->gen_report_error(
+            "vkGetPhysicalDeviceQueueFamilyProperties",
+            "no any device queue device properties");
+
+        err = VK_INCOMPLETE;
+    }
+
+    if (!err)
+    {
+        this->physical_device_queue_family_props.resize(queue_count);
+
+        vkGetPhysicalDeviceQueueFamilyProperties(
+            this->physical_device, &queue_count,
+            this->physical_device_queue_family_props.data()
+        );
+    }
+
+    return err;
+}
+
 void Graphics::Vulkan_Renderer::output_version(void) const
 {
     printf("----------------------------------------\n");
@@ -429,6 +462,18 @@ void Graphics::Vulkan_Renderer::output_choosen_physical_device(void) const
     printf("----------------------------------------\n");
     printf("Using physical device:\n");
     output_physical_device(&this->physical_device);
+}
+
+void Graphics::Vulkan_Renderer::output_physical_device_queue_family_properties(void) const
+{
+    printf("----------------------------------------\n");
+    printf("Physical device queue famuly properties:\n");
+
+    for (size_t i = 0; i < this->physical_device_queue_family_props.size(); ++i)
+    {
+        printf("\n%zu:\n", i);
+        output_physical_device_queue_family_prop(&this->physical_device_queue_family_props[i]);
+    }
 }
 
 VkLayerProperties *Graphics::Vulkan_Renderer::get_instance_layers_properties_arr(size_t *lenght)

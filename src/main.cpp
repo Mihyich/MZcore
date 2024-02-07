@@ -155,6 +155,7 @@ int WINAPI WinMain(
 		app::vk_renderer.output_instance_layers_properties();
 		app::vk_renderer.output_physical_devices();
         app::vk_renderer.output_choosen_physical_device();
+        app::vk_renderer.output_physical_device_queue_family_properties();
 	}
 
 	// Запустить игровой цикл

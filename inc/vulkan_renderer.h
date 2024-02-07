@@ -33,9 +33,8 @@ namespace Graphics
     	std::vector<VkExtensionProperties> extensions; // расширения
         std::vector<VkLayerProperties> layers; // слои
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
-    	std::vector<VkQueueFamilyProperties> queue_family_props; // семейтва очередей
-
         VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
+        std::vector<VkQueueFamilyProperties> physical_device_queue_family_props; // семейcтва очередей выбранного ф. у.
 
     	// информация о последней ошибке
     	std::string error_report;
@@ -83,7 +82,7 @@ namespace Graphics
 
         VkResult create_debug_utils_messenger_ext(void);
 
-    	VkResult get_physical_device_queue_family_properties(const VkPhysicalDevice device);
+    	VkResult get_physical_device_queue_family_properties(void);
 
     public:
 
@@ -96,6 +95,8 @@ namespace Graphics
     	void output_physical_devices(void) const;
 
         void output_choosen_physical_device(void) const;
+
+        void output_physical_device_queue_family_properties(void) const;
 
         VkLayerProperties *get_instance_layers_properties_arr(size_t *lenght);
 

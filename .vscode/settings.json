@@ -63,6 +63,8 @@
         "vulkan_dynamic_ext_loader.h": "cpp",
         "vulkan_renderer.h": "cpp",
         "vulkan_messenger.h": "cpp",
+        "list": "cpp",
+        "set": "cpp"
     },
 
     "files.insertFinalNewline": true,

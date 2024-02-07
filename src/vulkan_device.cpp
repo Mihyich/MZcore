@@ -55,6 +55,40 @@ namespace Graphics
         // Другие свойства...
     }
 
+    void output_queue_falgs(VkQueueFlags vqf)
+    {
+        std::list<std::string> fn;
+        std::list<std::string>::iterator it;
+
+        if (vqf & VK_QUEUE_GRAPHICS_BIT) fn.push_back("VK_QUEUE_GRAPHICS_BIT");
+        if (vqf & VK_QUEUE_COMPUTE_BIT) fn.push_back("VK_QUEUE_COMPUTE_BIT");
+        if (vqf & VK_QUEUE_TRANSFER_BIT) fn.push_back("VK_QUEUE_TRANSFER_BIT");
+        if (vqf & VK_QUEUE_SPARSE_BINDING_BIT) fn.push_back("VK_QUEUE_SPARSE_BINDING_BIT");
+        if (vqf & VK_QUEUE_PROTECTED_BIT) fn.push_back("VK_QUEUE_PROTECTED_BIT");
+
+        printf("queueFlags: ");
+
+        for (it = fn.begin(); it != fn.end(); ++it)
+        {
+            if (it == fn.begin())
+                printf("%s", (*it).c_str());
+            else
+                printf(" | %s", (*it).c_str());
+        }
+
+        printf("\n");
+    }
+
+    void output_physical_device_queue_family_prop(const VkQueueFamilyProperties *vqfp)
+    {
+        printf("\tminImageTransferGranularity-->depth:  %u\n", vqfp->minImageTransferGranularity.depth);
+        printf("\tminImageTransferGranularity-->width:  %u\n", vqfp->minImageTransferGranularity.width);
+        printf("\tminImageTransferGranularity-->height: %u\n", vqfp->minImageTransferGranularity.height);
+        printf("\tqueueCount:                           %u\n", vqfp->queueCount);
+        printf("\t"); output_queue_falgs(vqfp->queueFlags);
+        printf("\ttimestampValidBits:                   %u\n", vqfp->timestampValidBits);
+    }
+
     VkResult check_device_extension_support(VkPhysicalDevice *vpd, const char **req_ext, size_t count)
     {
         VkResult err = VK_SUCCESS;
