@@ -1,10 +1,5 @@
 #include "vulkan_renderer.h"
 
-bool Graphics::is_queuefamilyindices_complete(const QueueFamilyIndices *qfi)
-{
-
-}
-
 std::string *Graphics::Vulkan_Renderer::get_error_report(void)
 {
     return &this->error_report;
@@ -85,6 +80,10 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     // поиск семейств очередей у ф. у.
     if (!err)
         err = get_physical_device_queue_family_properties();
+
+    // выбор определеннеого семейства ф. у.
+    if (!err)
+        err = choosing_phisical_device_queue_family();
 
     // загрузка расширений vulkan
     if (!err)
@@ -388,6 +387,34 @@ VkResult Graphics::Vulkan_Renderer::get_physical_device_queue_family_properties(
             this->physical_device, &queue_count,
             this->physical_device_queue_family_props.data()
         );
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
+{
+    VkResult err = VK_INCOMPLETE;
+
+    this->queue_family.set = false;
+
+    for (this->queue_family.index = 0;
+        !this->queue_family.set && queue_family.index < this->physical_device_queue_family_props.size();
+        ++this->queue_family.index)
+    {
+        if (physical_device_queue_family_props[queue_family.index].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            err = VK_SUCCESS;
+            this->queue_family.set = true;
+            break;
+        }
+    }`
+
+    if (err)
+    {
+        this->gen_report_error(
+            "choosing_phisical_device_queue_family",
+            "no any fitted queue family supported neccessary flags");
     }
 
     return err;

@@ -12,13 +12,11 @@
 
 namespace Graphics
 {
-    struct QueueFamilyIndices
+    struct QueueFamilyIndex
     {
-        std::vector<uint32_t> graphicsFamily;
-        std::vector<uint32_t> presentFamily;
+        uint32_t index = 0; // индекс семейства очереди
+        bool set = false; // был ли получен индекс
     };
-
-    bool is_queuefamilyindices_complete(const QueueFamilyIndices *qfi);
 
     class Vulkan_Renderer
     {
@@ -27,13 +25,13 @@ namespace Graphics
     	VkInstance instance = VK_NULL_HANDLE; // экземпляр Vulkan
     	VkApplicationInfo appInfo = {}; // информация о приложении для Vulkan
     	VkInstanceCreateInfo createInfo = {}; // структура для создания экземпляра Vulkan
-
         VkDebugUtilsMessengerEXT dbg_msg = { nullptr }; // отладодчный вывод Vulkan
 
     	std::vector<VkExtensionProperties> extensions; // расширения
         std::vector<VkLayerProperties> layers; // слои
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
         VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
+        QueueFamilyIndex queue_family; // выбранное семейство очереди на физическом устройстве
         std::vector<VkQueueFamilyProperties> physical_device_queue_family_props; // семейcтва очередей выбранного ф. у.
 
     	// информация о последней ошибке
@@ -50,8 +48,10 @@ namespace Graphics
         // запрашиваемые расширения физического устройства
         std::vector<const char*> req_device_extensions;
 
+        // получить отчет о последней ошибке
         std::string *get_error_report(void);
 
+        // инициализация vulkan
     	VkResult init(bool user_extensions = false, bool user_layers = false, bool debug = false);
 
     private:
@@ -83,6 +83,8 @@ namespace Graphics
         VkResult create_debug_utils_messenger_ext(void);
 
     	VkResult get_physical_device_queue_family_properties(void);
+
+        VkResult choosing_phisical_device_queue_family(void);
 
     public:
 
