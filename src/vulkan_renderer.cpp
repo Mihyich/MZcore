@@ -85,6 +85,10 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     if (!err)
         err = choosing_phisical_device_queue_family();
 
+    // создание логического устройства
+    if (!err)
+        err = create_logical_device();
+
     // загрузка расширений vulkan
     if (!err)
         err = load_extensions();
@@ -300,6 +304,116 @@ VkResult Graphics::Vulkan_Renderer::choosing_physical_device(void)
     return err;
 }
 
+VkResult Graphics::Vulkan_Renderer::get_physical_device_queue_family_properties(void)
+{
+    VkResult err = VK_SUCCESS;
+    uint32_t queue_count = 0;
+
+    vkGetPhysicalDeviceQueueFamilyProperties(this->physical_device, &queue_count, nullptr);
+
+    if (!queue_count)
+    {
+        this->gen_report_error(
+            "vkGetPhysicalDeviceQueueFamilyProperties",
+            "no any device queue device properties");
+
+        err = VK_INCOMPLETE;
+    }
+
+    if (!err)
+    {
+        this->physical_device_queue_family_props.resize(queue_count);
+
+        vkGetPhysicalDeviceQueueFamilyProperties(
+            this->physical_device, &queue_count,
+            this->physical_device_queue_family_props.data()
+        );
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::create_logical_device(void)
+{
+    VkResult err = VK_SUCCESS;
+    VkDeviceQueueCreateInfo vdqci;
+    VkPhysicalDeviceFeatures vpdf; // гарантия поддержки требуемых функций
+    VkDeviceCreateInfo vdci;
+    float priority = 1.f;
+
+    vdqci.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    vdqci.flags = 0;
+    vdqci.pNext = nullptr;
+    vdqci.queueFamilyIndex = this->queue_family.fi;
+    vdqci.queueCount = 1;
+    vdqci.pQueuePriorities = &priority;
+
+    memset(&vpdf, VK_FALSE, sizeof(VkPhysicalDeviceFeatures));
+
+    vdci.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    vdci.flags = 0;
+    vdci.pNext = nullptr;
+    vdci.queueCreateInfoCount = 1;
+    vdci.pQueueCreateInfos = &vdqci;
+    vdci.pEnabledFeatures = &vpdf;
+    vdci.enabledLayerCount = this->req_layers.size();
+    vdci.ppEnabledLayerNames = this->req_layers.data();
+    vdci.enabledExtensionCount = 0;
+    vdci.ppEnabledExtensionNames = nullptr;
+
+    err = vkCreateDevice(
+        this->physical_device, &vdci,
+        nullptr, &this->device);
+
+    if (err)
+    {
+        this->gen_report_error(
+            "vkCreateDevice",
+            nullptr, err
+        );
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::get_queue(void)
+{
+    VkResult err = VK_SUCCESS;
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
+{
+    VkResult err = VK_INCOMPLETE;
+
+    this->queue_family.fset = false;
+    this->queue_family.qset = false;
+
+    for (this->queue_family.fi = 0;
+        !this->queue_family.fset && queue_family.fi < this->physical_device_queue_family_props.size();
+        ++this->queue_family.fi)
+    {
+        if (physical_device_queue_family_props[queue_family.fi].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            err = VK_SUCCESS;
+            // по умолчанию 0 для queue_family.qi
+            this->queue_family.fset = true;
+            this->queue_family.qset = true;
+            break;
+        }
+    }
+
+    if (err)
+    {
+        this->gen_report_error(
+            "choosing_phisical_device_queue_family",
+            "no any fitted queue family supported neccessary flags");
+    }
+
+    return err;
+}
+
 VkResult Graphics::Vulkan_Renderer::load_extensions(void)
 {
     VkResult err = VK_SUCCESS;
@@ -358,63 +472,6 @@ VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
             nullptr,
             err
         );
-    }
-
-    return err;
-}
-
-VkResult Graphics::Vulkan_Renderer::get_physical_device_queue_family_properties(void)
-{
-    VkResult err = VK_SUCCESS;
-    uint32_t queue_count = 0;
-
-    vkGetPhysicalDeviceQueueFamilyProperties(this->physical_device, &queue_count, nullptr);
-
-    if (!queue_count)
-    {
-        this->gen_report_error(
-            "vkGetPhysicalDeviceQueueFamilyProperties",
-            "no any device queue device properties");
-
-        err = VK_INCOMPLETE;
-    }
-
-    if (!err)
-    {
-        this->physical_device_queue_family_props.resize(queue_count);
-
-        vkGetPhysicalDeviceQueueFamilyProperties(
-            this->physical_device, &queue_count,
-            this->physical_device_queue_family_props.data()
-        );
-    }
-
-    return err;
-}
-
-VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
-{
-    VkResult err = VK_INCOMPLETE;
-
-    this->queue_family.set = false;
-
-    for (this->queue_family.index = 0;
-        !this->queue_family.set && queue_family.index < this->physical_device_queue_family_props.size();
-        ++this->queue_family.index)
-    {
-        if (physical_device_queue_family_props[queue_family.index].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
-            err = VK_SUCCESS;
-            this->queue_family.set = true;
-            break;
-        }
-    }`
-
-    if (err)
-    {
-        this->gen_report_error(
-            "choosing_phisical_device_queue_family",
-            "no any fitted queue family supported neccessary flags");
     }
 
     return err;
@@ -523,6 +580,7 @@ VkPhysicalDevice *Graphics::Vulkan_Renderer::get_physical_devices_arr(size_t *le
 
 Graphics::Vulkan_Renderer::~Vulkan_Renderer()
 {
+    if (this->device) vkDestroyDevice(this->device, nullptr);
     if (this->instance) vkDestroyInstance(instance, nullptr);
 }
 

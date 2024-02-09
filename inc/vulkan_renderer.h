@@ -14,8 +14,10 @@ namespace Graphics
 {
     struct QueueFamilyIndex
     {
-        uint32_t index = 0; // индекс семейства очереди
-        bool set = false; // был ли получен индекс
+        uint32_t fi = 0; // индекс семейства очереди
+        uint32_t qi = 0; // индекс очереди в семействе
+        bool fset = false; // был ли получен индекс семейства очереди
+        bool qset = false; // был ли получен индекс очереди в семействе
     };
 
     class Vulkan_Renderer
@@ -31,8 +33,10 @@ namespace Graphics
         std::vector<VkLayerProperties> layers; // слои
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
         VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
-        QueueFamilyIndex queue_family; // выбранное семейство очереди на физическом устройстве
         std::vector<VkQueueFamilyProperties> physical_device_queue_family_props; // семейcтва очередей выбранного ф. у.
+        QueueFamilyIndex queue_family; // выбранное семейство очереди на физическом устройстве (индекс)
+        VkQueue queue; // очередь
+        VkDevice device = VK_NULL_HANDLE; // выбранное логическое устройство
 
     	// информация о последней ошибке
     	std::string error_report;
@@ -45,7 +49,7 @@ namespace Graphics
         // запрашиваемые слои экземпляра vulkan
         std::vector<const char*> req_layers;
 
-        // запрашиваемые расширения физического устройства
+        // запрашиваемые расширения логического устройства
         std::vector<const char*> req_device_extensions;
 
         // получить отчет о последней ошибке
@@ -78,13 +82,17 @@ namespace Graphics
 
         VkResult choosing_physical_device(void);
 
+        VkResult get_physical_device_queue_family_properties(void);
+
+        VkResult choosing_phisical_device_queue_family(void);
+
+        VkResult create_logical_device(void);
+
+        VkResult get_queue(void);
+
         VkResult load_extensions(void);
 
         VkResult create_debug_utils_messenger_ext(void);
-
-    	VkResult get_physical_device_queue_family_properties(void);
-
-        VkResult choosing_phisical_device_queue_family(void);
 
     public:
 
