@@ -41,6 +41,14 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     if (!err)
         err = create_instance();
 
+    // загрузка расширений vulkan
+    if (!err)
+        err = load_extensions();
+
+    // создание отладочного вывода vulkan
+    if (!err && debug)
+        err = create_debug_utils_messenger_ext();
+
     // поиск доступных устройств
     if (!err)
         err = enumerate_physical_devices();
@@ -63,14 +71,6 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     // создание логического устройства
     if (!err)
         err = create_logical_device();
-
-    // загрузка расширений vulkan
-    if (!err)
-        err = load_extensions();
-
-    // создание отладочного вывода vulkan
-    if (!err && debug)
-        err = create_debug_utils_messenger_ext();
 
     return err;
 }
@@ -267,6 +267,69 @@ VkResult Graphics::Vulkan_Renderer::create_instance()
     return err;
 }
 
+VkResult Graphics::Vulkan_Renderer::load_extensions(void)
+{
+    VkResult err = VK_SUCCESS;
+
+    if (!err)
+    {
+        if ((err = VK_DYNAMIC_LOAD_FUNC_CHECK(this->instance, vkCreateDebugUtilsMessengerEXT)))
+        {
+            this->gen_report_error("vkGetInstanceProcAddr",
+                "cannot load \"vkCreateDebugUtilsMessengerEXT\" function",
+                err);
+        }
+    }
+
+    if (!err)
+    {
+        if ((err = VK_DYNAMIC_LOAD_FUNC_CHECK(this->instance, vkDestroyDebugUtilsMessengerEXT)))
+        {
+            this->gen_report_error("vkGetInstanceProcAddr",
+                "cannot load \"vkDestroyDebugUtilsMessengerEXT\" function",
+                err);
+        }
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
+{
+    VkResult err = VK_SUCCESS;
+    VkDebugUtilsMessengerEXT debugMessenger;
+    VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
+
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+
+    createInfo.messageSeverity =
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+
+    createInfo.messageType =
+    VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+    VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
+    createInfo.pfnUserCallback = vk_debug_msg_callback;
+    createInfo.pUserData = nullptr;
+
+    err = vkCreateDebugUtilsMessengerEXT(this->instance, &createInfo, nullptr, &debugMessenger);
+
+    if (err)
+    {
+        this->gen_report_error(
+            "vkCreateDebugUtilsMessengerEXT",
+            nullptr,
+            err
+        );
+    }
+
+    return err;
+}
+
 VkResult Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
 {
     VkResult err = VK_SUCCESS;
@@ -430,69 +493,6 @@ VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
         this->gen_report_error(
             "choosing_phisical_device_queue_family",
             "no any fitted queue family supported neccessary flags");
-    }
-
-    return err;
-}
-
-VkResult Graphics::Vulkan_Renderer::load_extensions(void)
-{
-    VkResult err = VK_SUCCESS;
-
-    if (!err)
-    {
-        if ((err = VK_DYNAMIC_LOAD_FUNC_CHECK(this->instance, vkCreateDebugUtilsMessengerEXT)))
-        {
-            this->gen_report_error("vkGetInstanceProcAddr",
-                "cannot load \"vkCreateDebugUtilsMessengerEXT\" function",
-                err);
-        }
-    }
-
-    if (!err)
-    {
-        if ((err = VK_DYNAMIC_LOAD_FUNC_CHECK(this->instance, vkDestroyDebugUtilsMessengerEXT)))
-        {
-            this->gen_report_error("vkGetInstanceProcAddr",
-                "cannot load \"vkDestroyDebugUtilsMessengerEXT\" function",
-                err);
-        }
-    }
-
-    return err;
-}
-
-VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
-{
-    VkResult err = VK_SUCCESS;
-    VkDebugUtilsMessengerEXT debugMessenger;
-    VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
-
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-
-    createInfo.messageSeverity =
-    VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-    VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
-    VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-    VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-
-    createInfo.messageType =
-    VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-    VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-    VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-
-    createInfo.pfnUserCallback = vk_debug_msg_callback;
-    createInfo.pUserData = nullptr;
-
-    err = vkCreateDebugUtilsMessengerEXT(this->instance, &createInfo, nullptr, &debugMessenger);
-
-    if (err)
-    {
-        this->gen_report_error(
-            "vkCreateDebugUtilsMessengerEXT",
-            nullptr,
-            err
-        );
     }
 
     return err;

@@ -80,6 +80,10 @@ namespace Graphics
 
         VkResult create_instance(void);
 
+        VkResult load_extensions(void);
+
+        VkResult create_debug_utils_messenger_ext(void);
+
         VkResult enumerate_physical_devices(void);
 
         void set_std_devise_extensions(void);
@@ -93,10 +97,6 @@ namespace Graphics
         VkResult create_logical_device(void);
 
         VkResult get_queue(void);
-
-        VkResult load_extensions(void);
-
-        VkResult create_debug_utils_messenger_ext(void);
 
     public:
 
