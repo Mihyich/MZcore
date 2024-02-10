@@ -602,6 +602,7 @@ VkPhysicalDevice *Graphics::Vulkan_Renderer::get_physical_devices_arr(size_t *le
 Graphics::Vulkan_Renderer::~Vulkan_Renderer()
 {
     if (this->device) vkDestroyDevice(this->device, nullptr);
+    if (this->dbg_msg && this->instance) vkDestroyDebugUtilsMessengerEXT(instance, dbg_msg, nullptr);
     if (this->instance) vkDestroyInstance(instance, nullptr);
 }
 
