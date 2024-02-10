@@ -76,6 +76,10 @@ namespace Graphics
 
         VkResult check_layers_support(void);
 
+        VkResult find_instance_version(void);
+
+        VkResult create_instance(void);
+
         VkResult enumerate_physical_devices(void);
 
         void set_std_devise_extensions(void);

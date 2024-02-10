@@ -8,13 +8,6 @@ std::string *Graphics::Vulkan_Renderer::get_error_report(void)
 VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers, bool debug)
 {
     VkResult err = VK_SUCCESS;
-    std::string tmp_str;
-
-    // поиск доступной версии вулкана
-    if ((err = vkEnumerateInstanceVersion(&this->version)) != VK_SUCCESS)
-        this->gen_report_error("vkEnumerateInstanceVersion", nullptr, err);
-    else
-        this->version &= ~(0xFFFU); // убрать состовляющую патча
 
     // поиск доступных расширений
     if (!err)
@@ -40,31 +33,13 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     if (!err)
         err = check_layers_support();
 
+    // поиск доуступной версии экземпляра вулкан
+    if (!err)
+        err = find_instance_version();
+
     // создание экземпляра
     if (!err)
-    {
-        // Инициализация информации о приложении для Vulkan
-        this->appInfo = {};
-        this->appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO; // Какую структур данных должен использовать vk для инициализации
-        this->appInfo.pApplicationName = "Galactic Engineer"; // Название приложения
-        this->appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0); // Версия приложения
-        this->appInfo.pEngineName = "MZcore"; // Название игрового движка
-        this->appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0); // Версия игрового движка
-        this->appInfo.apiVersion = this->version; // Версия vk
-
-        // Заполнение структуры для создания экземпляра Vulkan
-        this->createInfo = {};
-        this->createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        this->createInfo.pApplicationInfo = &this->appInfo;
-        this->createInfo.enabledExtensionCount = this->req_extensions.size();
-        this->createInfo.ppEnabledExtensionNames = this->req_extensions.data();
-        this->createInfo.enabledLayerCount = this->req_layers.size();
-        this->createInfo.ppEnabledLayerNames = this->req_layers.data();
-
-        // Создание экземпляра Vulkan
-        if ((err = vkCreateInstance(&this->createInfo, nullptr, &this->instance)) != VK_SUCCESS)
-            this->gen_report_error("vkCreateInstance", nullptr, err);
-    }
+        err = create_instance();
 
     // поиск доступных устройств
     if (!err)
@@ -242,6 +217,52 @@ VkResult Graphics::Vulkan_Renderer::check_layers_support(void)
             break;
         }
     }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::find_instance_version(void)
+{
+    VkResult err = VK_SUCCESS;
+
+    err = vkEnumerateInstanceVersion(&this->version);
+
+    if (err)
+    {
+        this->gen_report_error("vkEnumerateInstanceVersion", nullptr, err);
+        this->version = 0;
+    }
+    else
+        this->version &= ~(0xFFFU); // убрать состовляющую патча
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::create_instance()
+{
+    VkResult err = VK_SUCCESS;
+
+    // Инициализация информации о приложении для Vulkan
+    this->appInfo = {};
+    this->appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO; // Какую структур данных должен использовать vk для инициализации
+    this->appInfo.pApplicationName = "Galactic Engineer"; // Название приложения
+    this->appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0); // Версия приложения
+    this->appInfo.pEngineName = "MZcore"; // Название игрового движка
+    this->appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0); // Версия игрового движка
+    this->appInfo.apiVersion = this->version; // Версия vk
+
+    // Заполнение структуры для создания экземпляра Vulkan
+    this->createInfo = {};
+    this->createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    this->createInfo.pApplicationInfo = &this->appInfo;
+    this->createInfo.enabledExtensionCount = this->req_extensions.size();
+    this->createInfo.ppEnabledExtensionNames = this->req_extensions.data();
+    this->createInfo.enabledLayerCount = this->req_layers.size();
+    this->createInfo.ppEnabledLayerNames = this->req_layers.data();
+
+    // Создание экземпляра Vulkan
+    if ((err = vkCreateInstance(&this->createInfo, nullptr, &this->instance)) != VK_SUCCESS)
+        this->gen_report_error("vkCreateInstance", nullptr, err);
 
     return err;
 }
