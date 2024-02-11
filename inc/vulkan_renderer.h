@@ -86,6 +86,8 @@ namespace Graphics
 
         VkResult create_debug_utils_messenger_ext(void);
 
+        VkResult create_surface(void);
+
         VkResult enumerate_physical_devices(void);
 
         void set_std_devise_extensions(void);

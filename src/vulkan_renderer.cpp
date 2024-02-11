@@ -49,6 +49,10 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     if (!err && debug)
         err = create_debug_utils_messenger_ext();
 
+    // создание поверхности рисования
+    if (!err)
+        err = create_surface();
+
     // поиск доступных устройств
     if (!err)
         err = enumerate_physical_devices();
@@ -75,10 +79,6 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     // получение очереди л. у.
     if (!err)
         err = get_queue();
-
-    // создание поверхности на окне
-    if (!err)
-        createWin32SurfaceKHR(this->instance, &this->surface, &this->error_report);
 
     return err;
 }
@@ -330,6 +330,22 @@ VkResult Graphics::Vulkan_Renderer::create_debug_utils_messenger_ext(void)
     {
         this->gen_report_error(
             "vkCreateDebugUtilsMessengerEXT",
+            nullptr,
+            err
+        );
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::create_surface(void)
+{
+    VkResult err = createWin32SurfaceKHR(this->instance, &this->surface);
+
+    if (err)
+    {
+        this->gen_report_error(
+            "kCreateWin32SurfaceKHR",
             nullptr,
             err
         );

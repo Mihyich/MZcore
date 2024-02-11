@@ -9,7 +9,7 @@
 
 namespace Graphics
 {
-    VkResult createWin32SurfaceKHR(VkInstance instance, VkSurfaceKHR *surface, std::string *err_msg = nullptr);
+    VkResult createWin32SurfaceKHR(VkInstance instance, VkSurfaceKHR *surface);
 }
 
 #endif // VULKAN_SURFACE_H
