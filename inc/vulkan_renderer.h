@@ -35,8 +35,8 @@ namespace Graphics
         VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
         std::vector<VkQueueFamilyProperties> physical_device_queue_family_props; // семейcтва очередей выбранного ф. у.
         QueueFamilyIndex queue_family; // выбранное семейство очереди на физическом устройстве (индекс)
-        VkQueue queue; // очередь
         VkDevice device = VK_NULL_HANDLE; // выбранное логическое устройство
+        VkQueue queue = VK_NULL_HANDLE; // очередь
 
     	// информация о последней ошибке
     	std::string error_report;

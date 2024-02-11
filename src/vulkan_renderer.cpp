@@ -72,6 +72,10 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     if (!err)
         err = create_logical_device();
 
+    // получение очереди л. у.
+    if (!err)
+        err = get_queue();
+
     return err;
 }
 
@@ -463,6 +467,54 @@ VkResult Graphics::Vulkan_Renderer::create_logical_device(void)
 VkResult Graphics::Vulkan_Renderer::get_queue(void)
 {
     VkResult err = VK_SUCCESS;
+
+    if (!this->device)
+    {
+        this->gen_report_error(
+            "get_queue",
+            "logical device wasn't created"
+        );
+
+        err = VK_ERROR_DEVICE_LOST;
+    }
+
+    if (!err && !queue_family.fset)
+    {
+        this->gen_report_error(
+            "get_queue",
+            "family index wasn't set"
+        );
+
+        err = VK_INCOMPLETE;
+    }
+
+    if (!err && !queue_family.qset)
+    {
+        this->gen_report_error(
+            "get_queue",
+            "queue index wasn't set"
+        );
+
+        err = VK_INCOMPLETE;
+    }
+
+    if (!err)
+    {
+        vkGetDeviceQueue(
+            this->device, this->queue_family.fi,
+            this->queue_family.qi, &this->queue
+        );
+
+        if (!this->queue)
+        {
+            this->gen_report_error(
+                "vkGetDeviceQueue",
+                "Can't init queue pointer"
+            );
+
+            err = VK_INCOMPLETE;
+        }
+    }
 
     return err;
 }
