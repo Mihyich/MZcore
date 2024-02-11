@@ -657,9 +657,29 @@ VkPhysicalDevice *Graphics::Vulkan_Renderer::get_physical_devices_arr(size_t *le
 
 Graphics::Vulkan_Renderer::~Vulkan_Renderer()
 {
-    if (this->device) vkDestroyDevice(this->device, nullptr);
-    if (this->dbg_msg && this->instance) vkDestroyDebugUtilsMessengerEXT(instance, dbg_msg, nullptr);
-    if (this->instance) vkDestroyInstance(instance, nullptr);
+    if (this->device)
+    {
+        vkDestroyDevice(this->device, nullptr);
+        this->device = VK_NULL_HANDLE;
+    }
+
+    if (this->surface && this->instance)
+    {
+        vkDestroySurfaceKHR(this->instance, this->surface, nullptr);
+        this->surface = VK_NULL_HANDLE;
+    }
+
+    if (this->dbg_msg && this->instance)
+    {
+        vkDestroyDebugUtilsMessengerEXT(instance, dbg_msg, nullptr);
+        this->dbg_msg = VK_NULL_HANDLE;
+    }
+
+    if (this->instance)
+    {
+        vkDestroyInstance(instance, nullptr);
+        this->instance = VK_NULL_HANDLE;
+    }
 }
 
 void Graphics::Vulkan_Renderer::gen_report_error(const char *func_name, const char *description, int err_code)

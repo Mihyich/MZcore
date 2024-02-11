@@ -28,7 +28,7 @@ namespace Graphics
     	VkInstance instance = VK_NULL_HANDLE; // экземпляр Vulkan
     	VkApplicationInfo appInfo = {}; // информация о приложении для Vulkan
     	VkInstanceCreateInfo createInfo = {}; // структура для создания экземпляра Vulkan
-        VkDebugUtilsMessengerEXT dbg_msg = { nullptr }; // отладодчный вывод Vulkan
+        VkDebugUtilsMessengerEXT dbg_msg = VK_NULL_HANDLE; // отладодчный вывод Vulkan
 
     	std::vector<VkExtensionProperties> extensions; // расширения
         std::vector<VkLayerProperties> layers; // слои
