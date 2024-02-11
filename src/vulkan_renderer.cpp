@@ -76,6 +76,10 @@ VkResult Graphics::Vulkan_Renderer::init(bool user_extensions, bool user_layers,
     if (!err)
         err = get_queue();
 
+    // создание поверхности на окне
+    if (!err)
+        createWin32SurfaceKHR(this->instance, &this->surface, &this->error_report);
+
     return err;
 }
 
@@ -678,4 +682,11 @@ void Graphics::Vulkan_Renderer::gen_report_error(const char *func_name, const ch
         this->error_report += "\nErr_code: ";
         this->error_report += tmp;
     }
+
+}
+
+namespace Graphics
+{
+    bool debugging = true;
+    Vulkan_Renderer vk_renderer;
 }

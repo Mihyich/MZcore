@@ -9,6 +9,7 @@
 #include "vulkan_dynamic_ext_loader.h"
 #include "vulkan_device.h"
 #include "vulkan_messenger.h"
+#include "vulkan_surface.h"
 
 namespace Graphics
 {
@@ -37,6 +38,7 @@ namespace Graphics
         QueueFamilyIndex queue_family; // выбранное семейство очереди на физическом устройстве (индекс)
         VkDevice device = VK_NULL_HANDLE; // выбранное логическое устройство
         VkQueue queue = VK_NULL_HANDLE; // очередь
+        VkSurfaceKHR surface; // поверхность рисования (Переходник Vulkan <--> Система)
 
     	// информация о последней ошибке
     	std::string error_report;
@@ -123,6 +125,9 @@ namespace Graphics
     private:
     	void gen_report_error(const char *func_name, const char *description, int err_code = VK_SUCCESS);
     };
+
+    extern bool debugging;
+    extern Vulkan_Renderer vk_renderer;
 }
 
 #endif // VULKAN_RENDERER_H

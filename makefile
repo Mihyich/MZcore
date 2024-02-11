@@ -31,10 +31,10 @@ ifeq ($(mode), debug)
 endif
 
 # файлы приложения
-APP_OBJ := $(OUT)/main.o $(OUT)/app_args.o $(OUT)/console.o $(OUT)/dbg_window_proc.o \
-$(OUT)/game_loop.o $(OUT)/game_window_proc.o $(OUT)/str_converter.o $(OUT)/vulkan_device.o \
+APP_OBJ := $(OUT)/main.o $(OUT)/app_args.o $(OUT)/console.o $(OUT)/game_loop.o \
+$(OUT)/game_window_proc.o $(OUT)/str_converter.o $(OUT)/vulkan_device.o \
 $(OUT)/vulkan_dynamic_ext_loader.o $(OUT)/vulkan_messenger.o $(OUT)/vulkan_renderer.o \
-$(OUT)/window.o
+$(OUT)/vulkan_surface.o $(OUT)/window.o
 
 # файлы библиотеки линейной алгебры
 LA_OBJ := $(OUT)/LA_sup.o $(OUT)/Vector2D.o $(OUT)/Vector3D.o $(OUT)/Vector4D.o \

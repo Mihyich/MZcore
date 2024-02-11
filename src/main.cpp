@@ -1,11 +1,10 @@
 #include <Windows.h>
 #include <string>
 #include "definers.h"
-#include "vulkan_renderer.h"
-#include "dbg_window_proc.h"
 #include "game_window_proc.h"
 #include "game_loop.h"
 #include "app_args.h"
+#include "vulkan_renderer.h"
 #include "str_converter.h"
 
 int WINAPI WinMain(
@@ -17,6 +16,8 @@ int WINAPI WinMain(
 	BOOL err = EXIT_SUCCESS;
 	BOOL rtn = 0;
 	std::wstring wstr_tmp;
+
+    app::hInstance = hInstance;
 
 	// улучшение DPI
 	if (!SetProcessDPIAware())
@@ -33,54 +34,6 @@ int WINAPI WinMain(
 		}
 	}
 
-	// окно отладки
-	if (!err && app::debugging)
-	{
-		// Создание консоли
-		// if (!app::cnsl.create())
-		// {
-		// 	MessageBox(
-		// 		NULL,
-		// 		L"Не удалось создать консоль...\n",
-		// 		L"app::cnsl.create() error",
-		// 		MB_OK | MB_ICONINFORMATION);
-
-		// 	err = ERR_CNSL_CREATE;
-		// }
-
-		// app::cnsl.set_pos(0, 0);
-		// app::cnsl.set_size(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
-
-		// создание окна отладки ===========================
-		if (!err && (err = app::dbg_wnd.create(
-			CS_HREDRAW | CS_VREDRAW,
-			&debug_window_proc,
-			hInstance,
-			LoadIcon(NULL, IDI_APPLICATION),
-			LoadCursor(NULL, IDC_ARROW),
-			(HBRUSH)(COLOR_WINDOW + 2),
-			NULL,
-			L"GDB_WINDOW_CLASS",
-			LoadIcon(NULL, IDI_APPLICATION),
-			0,
-			L"MZcore editor",
-			WS_OVERLAPPEDWINDOW,
-			800, 600,
-			NULL,
-			NULL,
-			NULL,
-			nCmdShow)) != EXIT_SUCCESS)
-		{
-			MessageBox(
-				NULL,
-				L"Не удалось создать окно отладки...\n",
-				L"app::game_wnd.create() error",
-				MB_OK | MB_ICONINFORMATION);
-		}
-
-		// окно отладки создано  ===========================
-	}
-
 	// создание игрового окна ============================
 	if (!err && (err = app::game_wnd.create(
 		CS_HREDRAW | CS_VREDRAW,
@@ -94,9 +47,9 @@ int WINAPI WinMain(
 		LoadIcon(NULL, IDI_APPLICATION),
 		0,
 		L"no money - no funny",
-		app::debugging ? WS_CHILD | WS_VISIBLE : WS_OVERLAPPEDWINDOW,
-		400, 300,
-		app::debugging ? app::dbg_wnd.get_hWnd() : NULL,
+		WS_OVERLAPPEDWINDOW,
+		800, 600,
+		NULL,
 		NULL,
 		NULL,
 		nCmdShow)) != EXIT_SUCCESS)
@@ -108,20 +61,6 @@ int WINAPI WinMain(
 			MB_OK | MB_ICONINFORMATION);
 	}
 	// игровое окно создано ============================
-
-	// Если нужно то показать окно отладки
-	if (app::debugging && !err && app::dbg_wnd.show(nCmdShow) != EXIT_SUCCESS)
-	{
-		MessageBox(
-			NULL,
-			L"Не удалось показать окно отладки...\n",
-			L"app::dbg_wnd.show() error",
-			MB_OK | MB_ICONINFORMATION);
-
-		err = ERR_WND_SHOW;
-
-		app::dbg_wnd.set_focus();
-	}
 
 	// Показать игровое окно
 	if (!err && app::game_wnd.show(nCmdShow) != EXIT_SUCCESS)
@@ -136,9 +75,9 @@ int WINAPI WinMain(
 	}
 
 	// создание экземпляра вулкана
-	if (!err && (err = app::vk_renderer.init(false, false, app::vk_debug)) != EXIT_SUCCESS)
+	if (!err && (err = Graphics::vk_renderer.init(false, false, Graphics::debugging)) != EXIT_SUCCESS)
 	{
-		wstr_tmp = string_to_wstring(app::vk_renderer.get_error_report());
+		wstr_tmp = string_to_wstring(Graphics::vk_renderer.get_error_report());
 
 		MessageBox(
 			NULL,
@@ -150,12 +89,12 @@ int WINAPI WinMain(
     // некий вывод того чего получилось в vulkan'е
 	if (!err)
 	{
-		app::vk_renderer.output_version();
-        app::vk_renderer.output_instance_extensions_preperties();
-		app::vk_renderer.output_instance_layers_properties();
-		app::vk_renderer.output_physical_devices();
-        app::vk_renderer.output_choosen_physical_device();
-        app::vk_renderer.output_physical_device_queue_family_properties();
+		Graphics::vk_renderer.output_version();
+        Graphics::vk_renderer.output_instance_extensions_preperties();
+		Graphics::vk_renderer.output_instance_layers_properties();
+		Graphics::vk_renderer.output_physical_devices();
+        Graphics::vk_renderer.output_choosen_physical_device();
+        Graphics::vk_renderer.output_physical_device_queue_family_properties();
 	}
 
 	// Запустить игровой цикл
@@ -166,7 +105,6 @@ int WINAPI WinMain(
 	}
 
 	app::game_wnd.destroy();
-	if (app::debugging) app::dbg_wnd.destroy();
 	app::cnsl.destroy();
 	return err;
 }
