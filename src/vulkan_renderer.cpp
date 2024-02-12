@@ -386,12 +386,6 @@ VkResult Graphics::Vulkan_Renderer::enumerate_physical_devices(void)
     return err;
 }
 
-void Graphics::Vulkan_Renderer::set_std_devise_extensions(void)
-{
-    this->req_device_extensions.clear();
-    this->req_device_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-}
-
 VkResult Graphics::Vulkan_Renderer::choosing_physical_device(void)
 {
     VkResult err = VK_INCOMPLETE;
@@ -508,6 +502,12 @@ VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
     return err;
 }
 
+void Graphics::Vulkan_Renderer::set_std_devise_extensions(void)
+{
+    this->req_device_extensions.clear();
+    this->req_device_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+}
+
 VkResult Graphics::Vulkan_Renderer::create_logical_device(void)
 {
     VkResult err = VK_SUCCESS;
@@ -556,13 +556,13 @@ VkResult Graphics::Vulkan_Renderer::create_logical_device(void)
         vdci.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         vdci.flags = 0;
         vdci.pNext = nullptr;
+        vdci.pEnabledFeatures = &vpdf;
         vdci.queueCreateInfoCount = queue_count;
         vdci.pQueueCreateInfos = vdqci;
-        vdci.pEnabledFeatures = &vpdf;
         vdci.enabledLayerCount = this->req_layers.size();
         vdci.ppEnabledLayerNames = this->req_layers.data();
-        vdci.enabledExtensionCount = 0;
-        vdci.ppEnabledExtensionNames = nullptr;
+        vdci.enabledExtensionCount = this->req_device_extensions.size();
+        vdci.ppEnabledExtensionNames = this->req_device_extensions.data();
 
         err = vkCreateDevice(
             this->physical_device, &vdci,

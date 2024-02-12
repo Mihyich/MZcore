@@ -30,8 +30,8 @@ namespace Graphics
     	VkInstanceCreateInfo createInfo = {}; // структура для создания экземпляра Vulkan
         VkDebugUtilsMessengerEXT dbg_msg = VK_NULL_HANDLE; // отладодчный вывод Vulkan
 
-    	std::vector<VkExtensionProperties> extensions; // расширения
-        std::vector<VkLayerProperties> layers; // слои
+    	std::vector<VkExtensionProperties> extensions; // расширения экземпляра vulkan
+        std::vector<VkLayerProperties> layers; // слои экземпляра vulkan
         VkSurfaceKHR surface; // поверхность рисования (Переходник Vulkan <--> Система)
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
         VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
@@ -91,8 +91,6 @@ namespace Graphics
 
         VkResult enumerate_physical_devices(void);
 
-        void set_std_devise_extensions(void);
-
         VkResult choosing_physical_device(void);
 
         VkResult get_physical_device_queue_family_properties(void);
@@ -100,6 +98,8 @@ namespace Graphics
         VkResult check_physical_device_surface_supportKHR(uint32_t index, VkBool32 *supported);
 
         VkResult choosing_phisical_device_queue_family(void);
+
+        void set_std_devise_extensions(void);
 
         VkResult create_logical_device(void);
 
