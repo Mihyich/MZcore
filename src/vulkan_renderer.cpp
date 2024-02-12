@@ -441,37 +441,134 @@ VkResult Graphics::Vulkan_Renderer::get_physical_device_queue_family_properties(
     return err;
 }
 
+VkResult Graphics::Vulkan_Renderer::check_physical_device_surface_supportKHR(uint32_t index, VkBool32 *supported)
+{
+    VkResult err = VK_SUCCESS;
+
+    err = vkGetPhysicalDeviceSurfaceSupportKHR(
+        this->physical_device, index, this->surface, supported
+    );
+
+    if (err)
+    {
+        this->gen_report_error(
+            "vkGetPhysicalDeviceSurfaceSupportKHR",
+            nullptr,
+            err
+        );
+    }
+
+    return err;
+}
+
+VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
+{
+    VkResult err = VK_SUCCESS;
+    VkBool32 supported = VK_FALSE;
+
+    this->queue_family.gset = false;
+    this->queue_family.pset = false;
+
+    uint32_t i = 0;
+    bool not_ready = true;
+
+    while (!err && not_ready && i < this->physical_device_queue_family_props.size())
+    {
+        if (!queue_family.gset && this->physical_device_queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            this->queue_family.gi = i;
+            this->queue_family.gset = true;
+        }
+
+        if (!queue_family.pset)
+        {
+            err = check_physical_device_surface_supportKHR(i, &supported);
+
+            if (!err && supported)
+            {
+                this->queue_family.pi = i;
+                this->queue_family.pset = true;
+            }
+        }
+
+        not_ready = !(this->queue_family.gset && this->queue_family.pset);
+        ++i;
+    }
+
+    if (!err && not_ready)
+        err = VK_INCOMPLETE;
+
+    if (err)
+    {
+        this->gen_report_error(
+            "choosing_phisical_device_queue_family",
+            "no any fitted queue family supported neccessary flags");
+    }
+
+    return err;
+}
+
 VkResult Graphics::Vulkan_Renderer::create_logical_device(void)
 {
     VkResult err = VK_SUCCESS;
-    VkDeviceQueueCreateInfo vdqci;
+    uint32_t queue_count = 0;
+    uint32_t unique_queues[2]; // максимальное количество уже известно
+    VkDeviceQueueCreateInfo vdqci[2];
     VkPhysicalDeviceFeatures vpdf; // гарантия поддержки требуемых функций
     VkDeviceCreateInfo vdci;
     float priority = 1.f;
 
-    vdqci.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    vdqci.flags = 0;
-    vdqci.pNext = nullptr;
-    vdqci.queueFamilyIndex = this->queue_family.fi;
-    vdqci.queueCount = 1;
-    vdqci.pQueuePriorities = &priority;
+    if (!(this->queue_family.gset && this->queue_family.pset))
+    {
+        this->gen_report_error(
+            "create_logical_device",
+            "queue_family indeces weren't inited"
+        );
 
-    memset(&vpdf, VK_FALSE, sizeof(VkPhysicalDeviceFeatures));
+        err = VK_INCOMPLETE;
+    }
+    else
+    {
+        unique_queues[0] = this->queue_family.gi;
 
-    vdci.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    vdci.flags = 0;
-    vdci.pNext = nullptr;
-    vdci.queueCreateInfoCount = 1;
-    vdci.pQueueCreateInfos = &vdqci;
-    vdci.pEnabledFeatures = &vpdf;
-    vdci.enabledLayerCount = this->req_layers.size();
-    vdci.ppEnabledLayerNames = this->req_layers.data();
-    vdci.enabledExtensionCount = 0;
-    vdci.ppEnabledExtensionNames = nullptr;
+        if (unique_queues[0] == this->queue_family.pi)
+        {
+            queue_count = 1;
+        }
+        else
+        {
+            unique_queues[1] = this->queue_family.pi;
+            queue_count = 2;
+        }
 
-    err = vkCreateDevice(
-        this->physical_device, &vdci,
-        nullptr, &this->device);
+        for (uint32_t i = 0; i < queue_count; ++i)
+        {
+            vdqci[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            vdqci[i].flags = 0;
+            vdqci[i].pNext = nullptr;
+            vdqci[i].queueFamilyIndex = unique_queues[i];
+            vdqci[i].queueCount = 1;
+            vdqci[i].pQueuePriorities = &priority;
+        }
+
+        memset(&vpdf, VK_FALSE, sizeof(VkPhysicalDeviceFeatures));
+
+        vdci.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        vdci.flags = 0;
+        vdci.pNext = nullptr;
+        vdci.queueCreateInfoCount = queue_count;
+        vdci.pQueueCreateInfos = vdqci;
+        vdci.pEnabledFeatures = &vpdf;
+        vdci.enabledLayerCount = this->req_layers.size();
+        vdci.ppEnabledLayerNames = this->req_layers.data();
+        vdci.enabledExtensionCount = 0;
+        vdci.ppEnabledExtensionNames = nullptr;
+
+        err = vkCreateDevice(
+            this->physical_device, &vdci,
+            nullptr, &this->device
+        );
+    }
 
     if (err)
     {
@@ -498,7 +595,7 @@ VkResult Graphics::Vulkan_Renderer::get_queue(void)
         err = VK_ERROR_DEVICE_LOST;
     }
 
-    if (!err && !queue_family.fset)
+    if (!err && !queue_family.gset)
     {
         this->gen_report_error(
             "get_queue",
@@ -508,7 +605,7 @@ VkResult Graphics::Vulkan_Renderer::get_queue(void)
         err = VK_INCOMPLETE;
     }
 
-    if (!err && !queue_family.qset)
+    if (!err && !queue_family.pset)
     {
         this->gen_report_error(
             "get_queue",
@@ -521,50 +618,37 @@ VkResult Graphics::Vulkan_Renderer::get_queue(void)
     if (!err)
     {
         vkGetDeviceQueue(
-            this->device, this->queue_family.fi,
-            this->queue_family.qi, &this->queue
+            this->device, this->queue_family.gi,
+            0, &this->graphic_queue
         );
 
-        if (!this->queue)
+        if (!this->graphic_queue)
         {
             this->gen_report_error(
                 "vkGetDeviceQueue",
-                "Can't init queue pointer"
+                "Can't get graphics queue pointer"
             );
 
             err = VK_INCOMPLETE;
         }
     }
 
-    return err;
-}
-
-VkResult Graphics::Vulkan_Renderer::choosing_phisical_device_queue_family(void)
-{
-    VkResult err = VK_INCOMPLETE;
-
-    this->queue_family.fset = false;
-    this->queue_family.qset = false;
-
-    for (this->queue_family.fi = 0;
-        !this->queue_family.fset && queue_family.fi < this->physical_device_queue_family_props.size();
-        ++this->queue_family.fi)
+    if (!err)
     {
-        if (physical_device_queue_family_props[queue_family.fi].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        vkGetDeviceQueue(
+            this->device, this->queue_family.pi,
+            0, &this->present_queue
+        );
+
+        if (!this->present_queue)
         {
-            err = VK_SUCCESS;
-            // по умолчанию 0 для queue_family.qi
-            this->queue_family.fset = true;
-            this->queue_family.qset = true;
-            break;
-        }
-    }
+            this->gen_report_error(
+                "vkGetDeviceQueue",
+                "Can't get present queue pointer"
+            );
 
-    if (err)
-    {
-        this->gen_report_error(
-            "choosing_phisical_device_queue_family",
-            "no any fitted queue family supported neccessary flags");
+            err = VK_INCOMPLETE;
+        }
     }
 
     return err;

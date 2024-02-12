@@ -15,10 +15,10 @@ namespace Graphics
 {
     struct QueueFamilyIndex
     {
-        uint32_t fi = 0; // индекс семейства очереди
-        uint32_t qi = 0; // индекс очереди в семействе
-        bool fset = false; // был ли получен индекс семейства очереди
-        bool qset = false; // был ли получен индекс очереди в семействе
+        uint32_t gi = 0; // индекс графической очереди
+        uint32_t pi = 0; // индекс выводящей очереди
+        bool gset = false; // был ли получен индекс графической очереди
+        bool pset = false; // был ли получен индекс выводящей очереди
     };
 
     class Vulkan_Renderer
@@ -32,13 +32,14 @@ namespace Graphics
 
     	std::vector<VkExtensionProperties> extensions; // расширения
         std::vector<VkLayerProperties> layers; // слои
+        VkSurfaceKHR surface; // поверхность рисования (Переходник Vulkan <--> Система)
     	std::vector<VkPhysicalDevice> physical_devices; // физические устройства
         VkPhysicalDevice physical_device = VK_NULL_HANDLE; // выбранное физическое устройство
         std::vector<VkQueueFamilyProperties> physical_device_queue_family_props; // семейcтва очередей выбранного ф. у.
         QueueFamilyIndex queue_family; // выбранное семейство очереди на физическом устройстве (индекс)
         VkDevice device = VK_NULL_HANDLE; // выбранное логическое устройство
-        VkQueue queue = VK_NULL_HANDLE; // очередь
-        VkSurfaceKHR surface; // поверхность рисования (Переходник Vulkan <--> Система)
+        VkQueue graphic_queue = VK_NULL_HANDLE; // графическая очередь
+        VkQueue present_queue = VK_NULL_HANDLE; // выводящая очередь
 
     	// информация о последней ошибке
     	std::string error_report;
@@ -95,6 +96,8 @@ namespace Graphics
         VkResult choosing_physical_device(void);
 
         VkResult get_physical_device_queue_family_properties(void);
+
+        VkResult check_physical_device_surface_supportKHR(uint32_t index, VkBool32 *supported);
 
         VkResult choosing_phisical_device_queue_family(void);
 
